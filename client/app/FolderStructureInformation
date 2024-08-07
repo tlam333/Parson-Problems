@@ -1,0 +1,10 @@
+The folder structure for this project
+
+client
+|   - app
+|   |   - public (will contain images and other micellaneous shenanigans).
+|   |
+|   |   - src
+|   |   |   - pages         (page specific components eg. Home page, Logout Page ect)
+|   |   |   - components    (re-usable react components 
+                            eg. navigation bar, hamburger menu, Login button ect).
