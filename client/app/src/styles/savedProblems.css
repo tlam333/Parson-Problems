@@ -1,0 +1,23 @@
+* {
+    margin: 0;
+}
+
+.problem-table-container{
+    width: 100%;
+    background-color: black;
+}
+.categories-container{
+    height: 40%;
+    width: 100%;
+    background-color: red;
+}
+table, tr{
+    border:1px solid white;
+}
+
+table {
+    color: white;
+    width: 90%;
+    top:400px;
+    margin: auto;
+}
