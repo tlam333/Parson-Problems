@@ -1,12 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./config/config');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(/* Define routes here*/)
+app.use('/api/users', userRoutes);
+
 
 mongoose.connect(config.db.uri, config.db.options)
     .then(() => {
@@ -18,9 +20,6 @@ mongoose.connect(config.db.uri, config.db.options)
         console.error(`Database connection error: ${err}`);
     });
 
-app.get('/test', (req, res) => {
-    res.send('Success');
-});
 
 app.listen(config.port, () => {
     console.log(`Express server open on port ${config.port} at localhost:${config.port}`);
