@@ -2,7 +2,26 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
 exports.login = async (req, res) => {
-    // Find user inside of the db
+    try {
+        const user = await User.findOne({ userName: req.body.userName });
+
+        // If user exists check if the password matches
+        if (user) {
+            try {
+                // Compare incoming password to the password stored in the DB
+                if (await bcrypt.compare(req.body.password, user.password)) {
+
+                }
+            } catch (error) {
+        }
+        }
+        else {
+            res.status(404).send("User not found");
+        }
+        res.status(200).json(user); // Return jwt with user info and what not
+    } catch (error) {
+        res.status(400).send(`Internal Server Error: "${error}"`);
+    }
 }
 
 
