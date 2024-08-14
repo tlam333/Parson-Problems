@@ -20,13 +20,13 @@ exports.login = async (req, res) => {
             const accessToken = jwt.sign(
                 {"id": user._id},
                 config.access_token_secret,
-                { expiresIn: '30s'}
+                { expiresIn: '5m'}
             );
 
             const refreshToken = jwt.sign(
                 {"id": user._id},
                 config.refresh_token_secret,
-                { expiresIn: '1d'}
+                { expiresIn: '7d'}
             );
 
             Object.assign(user,
@@ -35,9 +35,21 @@ exports.login = async (req, res) => {
 
             await user.save();
 
-            res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+            res.cookie('access_token', accessToken, {
+                httpOnly: true,
+                /* secure: process.env.NODE_ENV === 'production' */
+                sameSite: 'Lax',    // To prevent CSRF (Cross Site Reqest Forgery)
+                maxAge: 5 * 60 * 1000 // 5 mins
+            });
 
-            res.send({ accessToken });
+            res.cookie('refresh_token', refreshToken, {
+                httpOnly: true,
+                /* secure: process.env.NODE_ENV === 'production' */
+                sameSite: 'Lax',    // To prevent CSRF (Cross Site Reqest Forgery)
+                maxAge: 7 * 24 * 60 * 60 * 1000     // 7 Days
+            })
+
+            res.sendStatus(200);
 
         } else {
             res.status(401).send('User not found or incorrect password');

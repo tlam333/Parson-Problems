@@ -1,13 +1,24 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./config/config');
+const authRoutes = require('./routes/authRoutes');
+const refreshRoutes = require('./routes/refreshRoutes');
 const userRoutes = require('./routes/userRoutes');
+const cookieParser = require('cookie-parser');
+const verifyJWT = require('./middleware/verifyJWT');
 
 const app = express();
 
-// Middleware
+// Middleware for reading json
 app.use(express.json());
-app.use('/api/users', userRoutes);
+
+// Middleware for cookies
+app.use(cookieParser());
+
+app.use('/api/auth', authRoutes);
+app.use('/api/refresh', refreshRoutes);
+
+app.use('/api/users', verifyJWT, userRoutes);
 
 
 mongoose.connect(config.db.uri, config.db.options)
@@ -19,8 +30,3 @@ mongoose.connect(config.db.uri, config.db.options)
     }).catch(err => {
         console.error(`Database connection error: ${err}`);
     });
-
-
-/*app.listen(config.port, () => {
-    console.log(`Express server open on port ${config.port} at localhost:${config.port}`);
-})*/

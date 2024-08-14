@@ -2,15 +2,17 @@ const config = require('../config/config');
 const jwt = require('jsonwebtoken');
 
 const verifyJWT = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) return res.sendStatus(401);
+    
+    const cookies = req.cookies;
+    if (!cookies?.access_token) {
+        return res.sendStatus(401);
+    }
 
-    console.log(authHeader);
+    const accessToken = cookies.access_token;
 
-    const token = authHeader.split(' ')[1];
 
     jwt.verify(
-        token,
+        accessToken,
         config.access_token_secret,
         (error, decoded) => {
             if (error) return res.sendStatus(403);
