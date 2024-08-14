@@ -40,6 +40,9 @@ const userSchema = new Schema({
         match: [/.+@.+\..+/, 'Please enter a valid email address'],
         required: true
     },
+    refreshToken: {
+        type: String
+    },
     description : {
         type: String
     },

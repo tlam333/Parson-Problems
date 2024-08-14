@@ -1,5 +1,8 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const config = require('../config/config');
+
 
 exports.login = async (req, res) => {
 
@@ -12,8 +15,30 @@ exports.login = async (req, res) => {
         }
         
         const passwordMatches = await bcrypt.compare(req.body.password, user.password);
+
         if (passwordMatches) {
-            res.status(200).send(user); // Return JWT 
+            const accessToken = jwt.sign(
+                {"id": user._id},
+                config.access_token_secret,
+                { expiresIn: '30s'}
+            );
+
+            const refreshToken = jwt.sign(
+                {"id": user._id},
+                config.refresh_token_secret,
+                { expiresIn: '1d'}
+            );
+
+            Object.assign(user,
+                { refreshToken: refreshToken }
+            );
+
+            await user.save();
+
+            res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+
+            res.send({ accessToken });
+
         } else {
             res.status(401).send('User not found or incorrect password');
         }
