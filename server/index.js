@@ -21,6 +21,6 @@ mongoose.connect(config.db.uri, config.db.options)
     });
 
 
-app.listen(config.port, () => {
+/*app.listen(config.port, () => {
     console.log(`Express server open on port ${config.port} at localhost:${config.port}`);
-})
+})*/

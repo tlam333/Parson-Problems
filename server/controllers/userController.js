@@ -2,25 +2,23 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
 exports.login = async (req, res) => {
+
+    // Find user
     try {
         const user = await User.findOne({ userName: req.body.userName });
 
-        // If user exists check if the password matches
-        if (user) {
-            try {
-                // Compare incoming password to the password stored in the DB
-                if (await bcrypt.compare(req.body.password, user.password)) {
-
-                }
-            } catch (error) {
+        if (!user) {
+            res.status(404).send('User not found or incorrect password');
         }
+        
+        const passwordMatches = await bcrypt.compare(req.body.password, user.password);
+        if (passwordMatches) {
+            res.status(200).send(user); // Return JWT 
+        } else {
+            res.status(401).send('User not found or incorrect password');
         }
-        else {
-            res.status(404).send("User not found");
-        }
-        res.status(200).json(user); // Return jwt with user info and what not
     } catch (error) {
-        res.status(400).send(`Internal Server Error: "${error}"`);
+        res.status(400).send(`Internal Server Error: "${error}"`)
     }
 }
 
@@ -37,14 +35,18 @@ exports.register = async (req, res) => {
                 salt: salt,
                 hashedPassword: hashedPassword
             }
-        )
-        // Attempt to insert to db
-        /*await User.save(
+        );
+
+        const newUser = new User(
             {
-                userName: req.body.userName,
-                password: hashedPassword
-            }
-        );*/
+            userName: req.body.userName,
+            password: hashedPassword,
+            email: req.body.email
+        }
+        );
+        // Attempt to insert to db
+        await newUser.save();
+
         res.status(201).send(
             {
                 userName: req.body.userName,
