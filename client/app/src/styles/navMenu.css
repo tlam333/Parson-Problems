@@ -1,0 +1,81 @@
+.off-screen-menu {
+    background-color: rgb(141, 52, 52);
+    height: 90vh;
+    width: 100%;
+    max-width: 450px;
+    position: fixed;
+    top: 0;
+    right: -450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 3rem;
+    transition: .3 ease;
+    border-radius: 25px;
+}
+
+.off-screen-menu li {
+    list-style-type: none;
+}
+
+.off-screen-menu.active {
+    right: 0;
+}
+
+nav {
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+}
+
+.profile {
+    height: 50px;
+    width: 50px;
+    align-self: left;
+    border-radius: 20px;
+    background-color: rgb(141, 52, 52);
+}
+
+.hamburger-menu {
+    height: 50px;
+    width: 50px;
+    margin-left: auto;
+    position: relative;
+}
+
+.hamburger-menu span {
+    height: 5px;
+    width: 100%;
+    background-color: rgb(245, 92, 92);
+    border-radius: 25px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: .3 ease;
+}
+
+.hamburger-menu span:nth-child(1) {
+    top: 25%;
+}
+
+.hamburger-menu span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu span:nth-child(3) {
+    top: 75%;
+}
+
+.hamburger-menu.active span:nth-child(1){
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.hamburger-menu.active span:nth-child(3){
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
