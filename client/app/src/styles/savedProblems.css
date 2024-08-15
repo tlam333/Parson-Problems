@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+}
+
+
+.categories-container{
+    display: flex;
+    height: 400px;
+    width: 100%;
+    background-color: red;
+}
+
+
+.problem-table-container{
+    width: 100%;
+    background-color: black;
+}
+
+
+table, tr{
+    border:1px solid white;
+}
+
+table {
+    color: white;
+    width: 90%;
+    top:400px;
+    margin: auto;
+}
