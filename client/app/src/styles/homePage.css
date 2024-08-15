@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css?family=Martian Mono');
+
+.HomeBody {
+    background-color: black;
+    color: white;
+    height: 90vh;
+    padding: 300px 300px;
+    font-family: 'Martian Mono';
+}
+
+h1 {
+    font-size: 100px;
+    font-family: 'Martian Mono';
+}
+
+.logo1{
+    width: 450px;
+    height: 200px;
+    background-color:rgb(141, 52, 52);
+    border-radius: 25px;
+}
+
+.logo1 h1 {
+    font-size: 100px;
+    padding: 5px 0 5px 0;
+    vertical-align: middle;
+}
+
+p {
+    font-size: 25px;
+
+    color: #dbbaba;
+}

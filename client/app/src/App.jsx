@@ -1,4 +1,6 @@
 import SavedProblems from './pages/SavedProblems.jsx';
+import HomePage from './pages/HomePage.jsx';
+
 import {
     createBrowserRouter,
     RouterProvider,
@@ -9,11 +11,7 @@ import {
 const router = createBrowserRouter([
     {
         path: "/Home",
-        element: (
-            <div>
-                <h1>HOME PAGE</h1>
-            </div>
-        )
+        element: <HomePage />
     },
     {
         path: "/SavedProblems",
