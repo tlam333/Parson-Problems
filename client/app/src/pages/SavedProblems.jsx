@@ -2,15 +2,34 @@ import '../styles/savedProblems.css';
 import { createElement } from 'react';
 
 function FetchProblems(){
-    let problems = [];
+    let problems;
     /*
         Call backend API route that fetches 
         all problem names, category tags, and
         their solved status.  
+
+        data format returned by backend should be 
+                [   {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"}
+                ]
     */
    return problems
 };
 
+function CategoryItem({name}){
+    return (
+        <div className="category-item">
+            <p>{name}</p>
+        </div>
+    )
+}
 
 // In future SavedProblems([categories])
 const SavedProblems = () => {
@@ -29,6 +48,11 @@ const SavedProblems = () => {
     return (
         <div>
                 <div className='categories-container'>
+                    <CategoryItem name={"Linear Regression"} />
+                    <CategoryItem name={"Linear Regression"} />
+                    <CategoryItem name={"Linear Regression"} />
+                    <CategoryItem name={"Linear Regression"} />
+                    <CategoryItem name={"Linear Regression"} />
                 </div>
 
                 <div className='problem-table-container'>
