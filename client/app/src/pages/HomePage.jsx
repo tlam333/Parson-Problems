@@ -1,4 +1,4 @@
-import NavMenu from '../components/NavMenu.jsx'
+import NavHome from "../components/NavHome"
 import '../styles/homePage.css'
 
 const HomeBody = () =>{
@@ -20,7 +20,7 @@ const HomeBody = () =>{
 const HomePage = () =>{
     return (
         <>
-            <NavMenu />
+            <NavHome />
             <HomeBody />
         </>
     )
