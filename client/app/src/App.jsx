@@ -1,5 +1,8 @@
 import SavedProblems from './pages/SavedProblems.jsx';
 import HomePage from './pages/HomePage.jsx';
+import ProfilePage from './pages/profilePage.jsx';
+//import './styles/tailwind.css';
+
 
 import {
     createBrowserRouter,
@@ -16,6 +19,10 @@ const router = createBrowserRouter([
     {
         path: "/SavedProblems",
         element: <SavedProblems />
+    },
+    {
+        path: "/Profile",
+        element: <ProfilePage />
     }
 ])
 
