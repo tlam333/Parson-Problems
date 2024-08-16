@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Martian Mono');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 .HomeBody {
     background-color: black;
     color: white;
@@ -16,7 +21,7 @@ h1 {
 .logo1{
     width: 450px;
     height: 200px;
-    background-color:rgb(141, 52, 52);
+    background-color:#FF7200;
     border-radius: 25px;
 }
 
