@@ -1,5 +1,12 @@
 import SavedProblems from './pages/SavedProblems.jsx';
 import HomePage from './pages/HomePage.jsx';
+<<<<<<< Updated upstream
+=======
+import Login from './pages/Login.jsx';
+import Registration from "./pages/Registration.jsx";
+import ProfilePage from "./pages/profilePage.jsx";
+import Categories from "./pages/Categories.jsx";
+>>>>>>> Stashed changes
 
 import {
     createBrowserRouter,
@@ -16,6 +23,25 @@ const router = createBrowserRouter([
     {
         path: "/SavedProblems",
         element: <SavedProblems />
+<<<<<<< Updated upstream
+=======
+    },
+    {
+        path: "/Login",
+        element: <Login />
+    },
+    {
+        path: "/Register",
+        element: <Registration/>
+    },
+    {
+        path: "/Profile",
+        element: <ProfilePage />
+    },
+    {
+        path: "/Categories",
+        element: <Categories />
+>>>>>>> Stashed changes
     }
 ])
 
