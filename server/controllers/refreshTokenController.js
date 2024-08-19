@@ -48,10 +48,10 @@ exports.handleRefreshToken = async (req, res) => {
                     maxAge: 5 * 60 * 1000 // 5 mins
                 });
             }
-        )
+        );
         res.sendStatus(200);
         
     } catch (error) {
-        res.status(400).send(`Internal Server Error: "${error}"`)
+        res.status(500).send(`Internal Server Error: "${error}"`)
     }
 }
