@@ -95,3 +95,50 @@ exports.register = async (req, res) => {
         res.status(400).send(`Internal Server Error: "${error}"`);
     }
 }
+
+
+/**
+ * This function 'logout' logs people out of their account by deleting the refresh token associated with his / her specific account
+ * @param {Express.Request} req 
+ * @param {Express.Response} res 
+ */
+exports.logout = async (req, res) => {
+    try {
+        const cookies = req.cookies;
+
+        // Check if request contains the cookie with the user's refresh token
+        if (!cookies?.refresh_token) {
+            res.sendStatus(401);
+        }
+
+        const refreshToken = cookies.refresh_token;
+
+        const user = await User.findOne({ refreshToken: refreshToken });
+
+        // Tampered token or user already logged out as there is no Token
+        if (!user) {
+            res.sendStatus(403);
+        }
+
+        const userId = user._id.toString();
+
+        // Verify JWT against 'refresh_token_secret'
+        jwt.verify(
+            refreshToken,
+            config.refresh_token_secret,
+            (error, decoded) => {
+
+                // If error occurs or if found 'userId' is not equal to the JWT 'id' then user is not authenticated (can't log out if you're not logged in already and you can't log out other users duhhhhhh)
+                if (error || userId !== decoded.id) {
+                    
+                    console.log(`User:\n\n${decoded.id}\n${user.userName}\n\nIs now logged out`);
+
+                    return res.sendStatus(403);
+                }
+            }
+        )
+
+    } catch (error) {
+        res.status(500).send(`Internal Server Error: "${error}"`);
+    }
+}
