@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PPSchema = new Schema({
-    username: { type: String, required: true},
-    description: {type: String, required: true},
-    duration: {type: Number, required: true},
-    date: {type: Date, required: true},
+    prompt: { type: String, required: true }, // Description of the problem
+    // language?
+    correct_code: { type: [String], required: true }, // Array of strings for the correct code lines
+    scrambled_code: { type: [String], required: true }, // Array of strings for the scrambled code lines
 }, {
-    timestamps: true,
+    timestamps: true,  // add createdAt and updatedAt timestamps
 });
 
 const ParsonProblem = mongoose.model('ParsonProblem', PPSchema);
