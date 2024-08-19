@@ -40,6 +40,11 @@ const userSchema = new Schema({
         match: [/.+@.+\..+/, 'Please enter a valid email address'],
         required: true
     },
+    role: {
+        type: String,
+        enum: ['user', 'admin', 'moderator'],
+        default: 'user'
+    },
     refreshToken: {
         type: String
     },

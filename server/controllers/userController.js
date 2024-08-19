@@ -1,8 +1,8 @@
 const User = require('../models/user');
 
 exports.getUser = async (req, res) => {
-    //verifyUser(req);
-    res.send(`Retrieved user info for id: ${req.params.id}`);
+    const user = await User.findById(req.id);
+    res.send(user);
 }
 
 exports.updateUser = async (req, res) => {

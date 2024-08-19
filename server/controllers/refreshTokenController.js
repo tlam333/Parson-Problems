@@ -5,7 +5,6 @@ const config = require('../config/config');
 
 exports.handleRefreshToken = async (req, res) => {
 
-    // Find user
     try {
         // Check for refresh token in request
         const cookies = req.cookies;
