@@ -1,5 +1,5 @@
 import NavHome from "../components/NavHome"
-import "../styles/homeAnimation.css"
+import "../styles/homeNavigation.css"
 
 const Home = () => {
     return (

@@ -1,18 +1,6 @@
 import {useNavigate} from "react-router-dom"
 
 const NavHome = () => {
-    function clickLogin(){
-        let path = `/Login`;
-        navigate(path);
-    }
-
-    function clickRegister(){
-        let path = `/Register`;
-        navigate(path);
-    }
-
-    let navigate = useNavigate();
-    
     return (
         <nav className="flex justify-between items-center bg-black p-4">
           {/* Left Button - Orange Button */}
@@ -29,9 +17,47 @@ const NavHome = () => {
               tabIndex={0}
               className="dropdown-content menu bg-black border border-orange-500 rounded-box w-52 p-2 shadow"
             >
-              <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" onClick={clickLogin}>Login</a></li>
-              <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" onClick={clickRegister}>Register</a></li>
+              <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#popup1">Login</a></li>
+              <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#popup2">Register</a></li>
             </ul>
+          </div>
+
+
+
+          <div class="popup" id="popup1">
+            <div class="popup-inner text-black">
+                  
+                  <h3 className="inline">Login</h3>
+                  <a href="#" class="button">x</a>
+                  
+                  <form className="mb-1">
+                      <label className="block font-bold">Email</label>
+                      <input className="block border-neutral-950 border-2 bg-white text-black"/>
+                      <label className="block font-bold">Password</label>
+                      <input className="block border-neutral-950 border-2 bg-white text-black"/>
+                      <button className="block p-1 mt-2 mb-2 rounded-lg font-bold text-white bg-orange-400">Submit</button>
+                  </form>
+                  
+                </div>
+          </div>
+
+          <div class="popup" id="popup2">
+              <div class="popup-inner text-black">
+                
+
+                <h3 className="inline">Register</h3>
+                <a href="#" class="button">x</a>
+
+                
+                <form className="mb-1">
+                    <label className="block font-bold">Email</label>
+                    <input className="block border-neutral-950 border-2 bg-white text-black"/>
+                    <label className="block font-bold">Password</label>
+                    <input className="block border-neutral-950 border-2 bg-white text-black"/>
+                    <button className="block p-1 mt-2 mb-2 rounded-lg font-bold text-white bg-orange-400">Submit</button>
+                </form>
+                
+              </div>
           </div>
         </nav>
       )

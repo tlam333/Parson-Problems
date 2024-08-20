@@ -1,4 +1,4 @@
-import "../styles/login.css"
+// import "../styles/login.css"
 import {useRegistration} from "../hooks/useRegistration.js"
 import {useState} from 'react'
 
@@ -18,7 +18,7 @@ const Registration = () => {
             <div id="header">
                 <h1 id="heading">Register</h1>
             </div>
-
+    
             <div className="login-form-container">
                 <form onSubmit={handleRegistration}>
                     <label>Email</label>
@@ -33,13 +33,15 @@ const Registration = () => {
                         onChange={(e)=>setPassword(e.target.value)}
                         value={password}
                     />
-
+    
                     <button id="login-submit-button" disabled={isLoading}>Submit</button>
                 </form>
             </div>
         </div>
-
+    
     )
+
 }
 
 export default Registration
+
