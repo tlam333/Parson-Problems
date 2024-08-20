@@ -1,5 +1,7 @@
 import SavedProblems from './pages/SavedProblems.jsx';
-import HomePage from './pages/HomePage.jsx';
+import ProfilePage from "./pages/profilePage.jsx";
+import CategoriesPage from "./pages/CategoriesPage.jsx";
+import Home from "./pages/Home.jsx"
 
 import {
     createBrowserRouter,
@@ -10,12 +12,24 @@ import {
 
 const router = createBrowserRouter([
     {
+        path: "/",
+        element: <Home />
+    },
+    {
         path: "/Home",
-        element: <HomePage />
+        element: <Home />
     },
     {
         path: "/SavedProblems",
         element: <SavedProblems />
+    },
+    {
+        path: "/Profile",
+        element: <ProfilePage />
+    },
+    {   
+        path: "/CategoriesPage",
+        element: <CategoriesPage />
     }
 ])
 

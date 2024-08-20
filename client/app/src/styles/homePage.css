@@ -1,10 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Martian Mono');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 .HomeBody {
     background-color: black;
     color: white;
-    height: 90vh;
-    padding: 300px 300px;
+    height: 100vh;
+    width: 100%;
+    padding: 10%;
     font-family: 'Martian Mono';
 }
 
@@ -16,7 +22,7 @@ h1 {
 .logo1{
     width: 450px;
     height: 200px;
-    background-color:rgb(141, 52, 52);
+    background-color:#FF7200;
     border-radius: 25px;
 }
 
@@ -30,4 +36,49 @@ p {
     font-size: 25px;
 
     color: #dbbaba;
+}
+
+.nav-home {
+    height: 10vh;
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+    justify-content: right;
+}
+
+.nav-home-button-container{
+    width: 10%;
+    height: 100%;
+    color: white;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: row;
+    align-items: center;
+    justify-content: center;
+    margin-right: 2%;
+    gap: 20px;
+    background-color: black;
+        
+}
+
+.login {
+    color: white;
+    font-size: 1em;
+    font-weight: bold;
+    border: 0;
+    width: 40%;
+    height: 60%;
+    border-radius: 25px;
+    background-color: rgb(141, 52, 52);
+}
+
+.register {
+    color: white;
+    font-size: 1em;
+    font-weight: bold;
+    border: 0;
+    height: 60%;
+    width: 45%;
+    border-radius: 25px;
+    background-color: rgb(141, 52, 52);
 }
