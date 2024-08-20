@@ -13,7 +13,9 @@ const HomeBody = () =>{
             <h4>On demand Data Analytics problems <br></br> 
                 at the click of a button.</h4>
             <p>Tech Ballers TM</p>
+
         </div>
+        
     )
 }
 

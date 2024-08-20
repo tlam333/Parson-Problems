@@ -1,8 +1,9 @@
 import SavedProblems from './pages/SavedProblems.jsx';
-import HomePage from './pages/HomePage.jsx';
 import Login from './pages/Login.jsx';
 import Registration from "./pages/Registration.jsx";
 import ProfilePage from "./pages/profilePage.jsx";
+import CategoriesPage from "./pages/CategoriesPage.jsx";
+import Home from "./pages/Home.jsx"
 
 import {
     createBrowserRouter,
@@ -13,8 +14,12 @@ import {
 
 const router = createBrowserRouter([
     {
+        path: "/",
+        element: <Home />
+    },
+    {
         path: "/Home",
-        element: <HomePage />
+        element: <Home />
     },
     {
         path: "/SavedProblems",
@@ -31,6 +36,10 @@ const router = createBrowserRouter([
     {
         path: "/Profile",
         element: <ProfilePage />
+    },
+    {   
+        path: "/CategoriesPage",
+        element: <CategoriesPage />
     }
 ])
 
