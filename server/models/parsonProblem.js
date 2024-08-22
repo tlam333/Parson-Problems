@@ -7,6 +7,7 @@ const PPSchema = new Schema({
     // language?
     correct_code: { type: [String], required: true }, // Array of strings for the correct code lines
     scrambled_code: { type: [String], required: true }, // Array of strings for the scrambled code lines
+    feedback: { type: String, required: true },
 }, {
     timestamps: true,  // add createdAt and updatedAt timestamps
 });

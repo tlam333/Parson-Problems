@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const fetch = require('node-fetch');
-let ParsonProblem = require('../models/parsonProblem');
+const ParsonProblem = require('../models/parsonProblem');
 
 router.route('/').get((req,res) => {
     ParsonProblem.find()
