@@ -16,8 +16,11 @@ const verifyJWT = (req, res, next) => {
         config.access_token_secret,
         (error, decoded) => {
             if (error) return res.sendStatus(403);
+            
+            console.log(decoded);
 
-            req.id = decoded.id;
+            req.sub = decoded.sub;
+            req.role = decoded.role;
             next();
         }
     );
