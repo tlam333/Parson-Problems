@@ -2,6 +2,7 @@ import SavedProblems from './pages/SavedProblems.jsx';
 import ProfilePage from "./pages/profilePage.jsx";
 import CategoriesPage from "./pages/CategoriesPage.jsx";
 import Home from "./pages/Home.jsx"
+import WorkPage from "./pages/WorkPage.jsx"
 
 import {
     createBrowserRouter,
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
     {   
         path: "/CategoriesPage",
         element: <CategoriesPage />
+    },
+    {
+        path: "/WorkPage",
+        element: <WorkPage/>
     }
 ])
 
