@@ -49,7 +49,7 @@ const NavHome = () => {
               className="text-orange-500 hover:bg-orange-500 hover:text-black"
               onClick={() => navigate("/profile")}
             >
-              Profile Stats
+              Profile Analytics
             </a>
           </li>
           <li>

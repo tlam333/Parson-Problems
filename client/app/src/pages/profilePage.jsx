@@ -6,7 +6,15 @@ const ProfileBody = () => {
   const [username, setUsername] = useState("username");
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center text-center font-sans">
+    <div className="min-h-screen bg-black text-white flex flex-col items-center  text-center font-sans">
+      <div className="mb-10">
+        <br />
+        <h1 className = "text-5xl font-bold">
+            Profile <span className="text-orange-500">Analytics </span>
+        </h1>
+        </div>
+      <br />
+      <br />
       {/* Profile Information */}
       <div className="mb-8">
         <div className="w-24 h-24 bg-gray-400 rounded-full mx-auto"></div>{" "}

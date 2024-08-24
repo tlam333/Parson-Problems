@@ -13,7 +13,7 @@ const Home = () => {
                         <p className="text-white text-4xl lg:text-8xl sm:text-5xl">Parsons</p>
         
                         <button className="w-24rem bg-orange-500 rounded-md 
-                        text-white text-4xl lg:text-8xl sm:text-5xl">Problems</button>
+                        text-black text-bold text-4xl lg:text-8xl sm:text-5xl">Problems</button>
 
                         <p className="text-orange-500 text-lg lg:text-2xl sm:text-xl">On demand Data Analytics problems<br></br>
                         at the click of a button.</p>
