@@ -1,10 +1,11 @@
 const router = require('express').Router();
 const ParsonProblem = require('../models/parsonProblem');
-const { Configuration, OpenAIApi } = require('openai');
+const Configuration = require('openai');
+const OpenAIApi = require('openai');
 
 // Configure the OpenAI API key
 const configuration = new Configuration({
-    apiKey: process.env.AI_API_KEY,  // Replace with your OpenAI API key
+    apiKey: process.env.AI_API_KEY,  // Ensure this environment variable is set with your OpenAI API key
 });
 
 const openai = new OpenAIApi(configuration);
@@ -43,14 +44,14 @@ router.post('/generate', async (req, res) => {
 
     try {
         // Send the prompt to the OpenAI API
-        const response = await openai.createCompletion({
-            model: "gpt-3.5-turbo-0125",  // Use the appropriate model
-            prompt: prompt,
+        const response = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",  // Use the correct model identifier
+            messages: [{ role: "user", content: prompt }],
             max_tokens: 500,
             temperature: 0.5
         });
 
-        const generatedCode = response.data.choices[0].text.trim();
+        const generatedCode = response.data.choices[0].message.content.trim();
 
         // Process the code (split it into lines for Parsons Problem)
         const codeLines = generatedCode.split('\n');

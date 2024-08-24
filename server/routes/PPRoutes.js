@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const ParsonProblem = require('../models/parsonProblem');
+let ParsonProblem = require('../models/parsonProblem');
 
 // Route to get all Parsons Problems
 router.route('/').get((req, res) => {
@@ -10,13 +10,16 @@ router.route('/').get((req, res) => {
 
 // Route to add a new custom Parsons Problem
 router.route('/add').post((req, res) => {
-    const { username, description, duration, date } = req.body;
+    const prompt = req.body.prompt;
+    const correct_code = req.body.correct_code;
+    const scrambled_code = req.body.scrambled_code;
+    const feedback = req.body.feedback;
 
     const newProblem = new ParsonProblem({
-        username,
-        description,
-        duration: Number(duration),
-        date: Date.parse(date),
+        prompt,
+        correct_code,
+        scrambled_code,
+        feedback,
     });
 
     newProblem.save()
