@@ -1,10 +1,10 @@
-import NavHome from "../components/NavHome"
+import NavMenu from "../components/NavMenu"
 import "../styles/homeNavigation.css"
 
 const Home = () => {
     return (
         <>
-            <NavHome/>
+            <NavMenu/>
             <div className = "flex flex-col items-left h-lvh  align-bottom justify-bottom ">
                     
                     <div className="h-1/4"></div>
