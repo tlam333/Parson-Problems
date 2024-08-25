@@ -24,6 +24,7 @@ router.route('/submit/:id').post(async (req, res) => {
 
             // Combine user's code lines into a single string
             const userCodeString = userCode.join('\n');
+            // const userCodeString = userCode;
 
             // Execute the user's code
             exec(`python -c "${userCodeString}"`, (userError, userStdout, userStderr) => {

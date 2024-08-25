@@ -25,9 +25,9 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/refresh', refreshRoutes);
 app.use('/api/users', verifyJWT, userRoutes);
-app.use('/parsonProblem', PPRoutes);
+app.use('/api/parsonProblem', PPRoutes);
 app.use('/api/ai', APIRoutes);
-app.use('/feedback', feedbackRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 
 mongoose.connect(config.db.uri, config.db.options)
