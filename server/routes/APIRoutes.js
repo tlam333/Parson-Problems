@@ -45,7 +45,7 @@ router.post('/generate', async (req, res) => {
     try {
         // Send the prompt to the OpenAI API
         const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",  // Use the correct model identifier
+            model: "davinci-002",  // Use the correct model identifier
             messages: [{ role: "user", content: prompt }],
             max_tokens: 500,
             temperature: 0.5
