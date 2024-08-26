@@ -120,7 +120,7 @@ const WorkPage = () => {
 
                 <div className="flex-wrap bg-black w-full h-full rounded-md md:w-2/5">
                     <button className="display-block mb-1.5 text-black 
-                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Question</button>
+                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Answer</button>
 
                     <Droppable droppableId="workspace-2">
                         {(provided, snapshot) => 
@@ -153,7 +153,7 @@ const WorkPage = () => {
                     </Droppable>
 
                     <button className="display-block mb-2.5 text-black 
-                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Regenerate</button>
+                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Submit</button>
                 </div>
             </div>
 

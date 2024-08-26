@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom'
 
 const NavMenu = () => {
   return (
@@ -9,7 +10,7 @@ const NavMenu = () => {
       </div>
       
       {/* Right Menu - Dropdown */}
-      <div className="dropdown dropdown-end">
+      <div className="dropdown dropdown-end z-40">
         <div tabIndex={0} role="button" className="text-orange-500 text-4xl">
           &#9776;
         </div>
@@ -17,8 +18,10 @@ const NavMenu = () => {
           tabIndex={0}
           className="dropdown-content menu bg-black border border-orange-500 rounded-box w-52 p-2 shadow"
         >
-          <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#!">Profile Stats</a></li>
-          <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#!">Saved Problems</a></li>
+          <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/Home'>Home</Link></li>
+          <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/Profile'>Profile</Link></li>
+          <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/CategoriesPage'>Categories</Link></li>
+          <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/WorkPage'>Workspace</Link></li>
         </ul>
       </div>
     </nav>

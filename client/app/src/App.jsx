@@ -34,7 +34,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/WorkPage",
-        element: <WorkPage/>
+        element: <WorkPage />
     }
 ])
 
