@@ -88,11 +88,9 @@ exports.register = async (req, res) => {
         // Attempt to insert to db
         await newUser.save();
 
-        return res.status(201).send(
+        return res.status(200).send(
             {
-                userName: req.body.userName,
-                salt: salt,
-                hashedPassword: hashedPassword
+                "message": `Account ${newUser.userName} was created`
             }
         );
     } catch (error) {
