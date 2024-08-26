@@ -12,7 +12,10 @@ const Categories = ({ categories }) => {
                         <h2 className="card-title">{category.title}</h2>
                         <p>{category.description}</p>
                         <div className="card-actions justify-end">
-                            <button className="btn btn-primary">Learn now!</button>
+                        <button className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded">
+  Learn now!
+</button>
+
                         </div>
                     </div>
                 </div>
