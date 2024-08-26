@@ -15,28 +15,28 @@ router.post('/generate', async (req, res) => {
     const { topic } = req.body;
 
     // Construct the prompt based on the selected topic
-    let prompt = '';
+    let prompt = 'you are a parsons problem generator, for student to learn basic code. Do not generate any description and only generate the code, also generate all in one code block so that it can be read by my app. This is the prompt:';
     switch (topic) {
         case 'DataFrame':
-            prompt = "Generate a Python code example for creating and manipulating a DataFrame using pandas.";
+            prompt += "Generate a Python code example for creating and manipulating a DataFrame using pandas.";
             break;
         case 'NMI':
-            prompt = "Generate Python code that calculates Normalized Mutual Information (NMI) using scikit-learn.";
+            prompt += "Generate Python code that calculates Normalized Mutual Information (NMI) using scikit-learn.";
             break;
         case 'Sentence Splitting':
-            prompt = "Generate Python code to split a sentence into smaller sentences using nltk.sent_tokenize().";
+            prompt += "Generate Python code to split a sentence into smaller sentences using nltk.sent_tokenize().";
             break;
         case 'Correlation':
-            prompt = "Generate Python code that calculates the correlation between two data sets using pandas.";
+            prompt += "Generate Python code that calculates the correlation between two data sets using pandas.";
             break;
         case 'Linear Regression':
-            prompt = "Generate Python code that performs linear regression using scikit-learn.";
+            prompt += "Generate Python code that performs linear regression using scikit-learn.";
             break;
         case 'Decision Tree Classifier':
-            prompt = "Generate Python code that trains a decision tree classifier using scikit-learn.";
+            prompt += "Generate Python code that trains a decision tree classifier using scikit-learn.";
             break;
         case 'CSV':
-            prompt = "Generate Python code that reads from and writes to a CSV file using pandas.";
+            prompt += "Generate Python code that reads from and writes to a CSV file using pandas.";
             break;
         default:
             return res.status(400).json({ error: 'Invalid topic selected' });

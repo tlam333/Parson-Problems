@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { stdout } = require('process');
 const ParsonProblem = require('../models/parsonProblem');
 const { exec } = require('child_process'); // For running code in a shell, but should be done in a secure environment
 
@@ -28,17 +29,17 @@ router.route('/submit/:id').post(async (req, res) => {
 
             // Execute the user's code
             exec(`python -c "${userCodeString}"`, (userError, userStdout, userStderr) => {
+                let feedback = '';
                 if (userError) {
                     // If there's an error, return it as feedback
-                    return res.json({ feedback: userStderr });
+                    feedback = userStderr;
                 }
-
-                // Compare user's output with the correct output
-                let feedback = '';
-                if (userStdout.trim() === correctStdout.trim()) {
-                    feedback = 'Correct! Your code produced the expected output.';
-                } else {
-                    feedback = `Incorrect. Your code output:\n${userStdout}\nExpected output:\n${correctStdout}`;
+                else {
+                    if (userStdout.trim() === correctStdout.trim()) {
+                        feedback = userStdout + 'Correct! Your code produced the expected output.';
+                    } else {
+                        feedback = userStderr;
+                    }
                 }
 
                 // Optionally save feedback in the database
