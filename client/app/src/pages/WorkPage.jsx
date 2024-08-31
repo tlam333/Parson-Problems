@@ -6,7 +6,14 @@ import {useState} from 'react'
 
 const WorkPage = () => {
     // What I expect to recieve from the API call a problem, with its content
-    const problemObject = {id: 'problem-1', content: ['Test line 1', 'Test line 2', 'Test line 3']}
+    const problemObject = {id: 'problem-1', content: 
+            ['Test line 1', 'Test line 2', 'Test line 3',
+             'Test line 4', 'Test line 5', 'Test line 6',
+             'Test line 7', 'Test line 8', 'Test line 9',
+             'Test line 10', 'Test line 11', 'Test line 12',
+             'Test line 13', 'Test line 14', 'Test line 15',
+             'Test line 16', 'Test line 17', 'Test line 18',
+            ]}
     
     // track line order states to ensure that component re-renders for each dnd
     let [lines, updateLines] = useState(problemObject.content);
@@ -17,7 +24,12 @@ const WorkPage = () => {
     const onDragEnd = (result) => {
 
         const {source, destination} = result
-        updateArrays(source, destination)
+        if (destination != null){
+            updateArrays(source, destination)
+        } else {
+            return
+        }
+        
 
     }
 
@@ -67,8 +79,10 @@ const WorkPage = () => {
     return (
         <div className="overflow-scroll bg-black h-lvh">
             <NavMenu />
-            <div className="w-5/6 mx-auto">
-                <button className="display-block mb-2.5 text-black bg-orange-500 w-1/9 h-1/3 rounded-md font-bold p-2">Prompt</button>
+            <div className="mt-4 w-5/6 mx-auto">
+                <button className="display-block mb-2.5 text-black bg-orange-500 w-1/9 h-1/3 border-r-4 border-black font-bold p-2">Description</button>
+                <button className="display-block mb-2.5 text-black bg-orange-500 w-1/9 h-1/3 border-r-4 border-black font-bold p-2">Hints</button>
+                <button className="display-block mb-2.5 text-black bg-orange-500 w-1/9 h-1/3 border-r-4 border-black font-bold p-2">Prompt</button>
                 <div className="w-full h-10 bg-slate-800"></div>
             </div>
 
@@ -80,12 +94,15 @@ const WorkPage = () => {
             <div className="h-full w-full mt-10 p-10 flex  bg-black
             flex-col items-center space-between md:flex-row justify-between gap-12">
                 <div className="flex-wrap bg-black w-full h-full rounded-md md:w-2/5">
-                    <button className="display-block mb-1.5 text-black 
+                    <button className="display-block mb-1.5 mr-1 text-black 
                     bg-orange-500 w-1/9 rounded-md font-bold p-2">Question</button>
+
+                    <button className="display-block mb-2.5 text-black 
+                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Regenerate</button>
 
                     <Droppable droppableId="workspace-1">
                         {(provided, snapshot) => 
-                                (<div className="flex flex-col gap-2 border-orange-500 border-2 w-full h-5/6 bg-black rounded-md mb-1"
+                                (<div className="flex flex-col overflow-auto gap-2 border-orange-500 border-2 w-full h-5/6 bg-black rounded-md mb-1"
                                     ref = {provided.innerRef}
                                     {...provided.droppableProps}
                                 >
@@ -113,18 +130,20 @@ const WorkPage = () => {
                     
                     </Droppable>
 
-                    <button className="display-block mb-2.5 text-black 
-                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Regenerate</button>
                 </div>
 
 
                 <div className="flex-wrap bg-black w-full h-full rounded-md md:w-2/5">
-                    <button className="display-block mb-1.5 text-black 
+                    <button className="display-block mb-1.5 mr-1 text-black 
                     bg-orange-500 w-1/9 rounded-md font-bold p-2">Answer</button>
+                    <button className="display-block mb-1.5 mr-1 text-black 
+                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Solutions</button>
+                    <button className="display-block mb-2.5 text-black 
+                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Submit</button>
 
                     <Droppable droppableId="workspace-2">
                         {(provided, snapshot) => 
-                                (<div className="flex flex-col gap-2 border-orange-500 border-2 w-full h-5/6 bg-black rounded-md mb-1"
+                                (<div className="flex flex-col overflow-auto gap-2 border-orange-500 border-2 w-full h-5/6 bg-black rounded-md mb-1"
                                     ref = {provided.innerRef}
                                     {...provided.droppableProps}
                                 >
@@ -152,12 +171,9 @@ const WorkPage = () => {
                     
                     </Droppable>
 
-                    <button className="display-block mb-2.5 text-black 
-                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Submit</button>
+
                 </div>
             </div>
-
-
             </DragDropContext>
 
         </div>

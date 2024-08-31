@@ -1,4 +1,4 @@
-import '../styles/savedProblems.css';
+// import '../styles/savedProblems.css';
 import { createElement } from 'react';
 
 function FetchProblems(){
@@ -43,39 +43,79 @@ const SavedProblems = () => {
                         solvedStatus: "Complete"},
                     {   problemName: "Linear Regression", 
                         problemCategory: "Regression", 
-                        solvedStatus: "Complete"}]
+                        solvedStatus: "Incomplete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Incomplete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Complete"},
+                    {   problemName: "Linear Regression", 
+                        problemCategory: "Regression", 
+                        solvedStatus: "Incomplete"},
+                    ]
 
     return (
-        <div>
-                <div className='categories-container'>
-                    <CategoryItem name={"Linear Regression"} />
-                    <CategoryItem name={"Linear Regression"} />
-                    <CategoryItem name={"Linear Regression"} />
-                    <CategoryItem name={"Linear Regression"} />
-                    <CategoryItem name={"Linear Regression"} />
+        <div className='h-lvh bg-black'>
+                <div className="w-4/6 m-auto h-1/6 p-10 bg-black">
+                    <p className="text-lg text-white font-bold block">Saved Problems</p>
+                    
                 </div>
 
-                <div className='problem-table-container'>
-                    <table>
-                        <thead>
-                            <tr>
-                                <td>Problem</td>
-                                <td>Category</td>
-                                <td>Status</td>
+
+                
+
+                <div className='overflow-y-auto  border-orange-500 mt-10 border-2 w-5/6 h-4/6 bg-black m-auto flex flex-col'>
+                    <table className='table-auto h-auto w-full m-auto'>
+                        <thead className='sticky top-0'>
+                            <tr className='text-white'>
+                                <td className='p-3 bg-orange-500'>Mark As Complete</td>
+                                <td className='p-3 bg-orange-500'>Problem</td>
+                                <td className='p-3 bg-orange-500'>Category</td>
+                                <td className='p-3 bg-orange-500'>Status</td>
                             </tr>
                         </thead>
 
-                        <tbody>
-                            {problems.map((item) => (
-                                <tr>
-                                    <td>{item.problemName}</td>
-                                    <td>{item.problemCategory}</td>
-                                    <td>{item.solvedStatus}</td>
+                        <tbody className="bg-black h-auto">
+                            {problems.map((item, index) => (
+                                <tr className='hover:bg-slate-900 text-white'>
+                                    <td className='p-3 text-sm border-b-orange-500 border-b-2'><input type='checkbox'></input></td>
+                                    <td className='p-3 text-sm border-b-orange-500 border-b-2 font-bold hover:text-orange-500'><button className="underline" href="/">{item.problemName}</button></td>
+                                    <td className='p-3 text-sm border-b-orange-500 border-b-2'>{item.problemCategory}</td>
+                                    <td className='p-3 text-sm border-b-orange-500 border-b-2'>
+                                        <span className={`rounded-lg text-white p-2 ${item.solvedStatus == 'Complete' ? 'bg-green-300' : 'bg-red-300'}`}>{item.solvedStatus}</span>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+
+                
         </div>
         
 
