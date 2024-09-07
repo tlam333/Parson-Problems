@@ -43,7 +43,7 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    email : {
+    email : { 
         type: String,
         unique: true,
         match: [/.+@.+\..+/, 'Please enter a valid email address'],
@@ -66,6 +66,14 @@ const userSchema = new Schema({
     stats: {
         type: userStatsSchema,
         default: {}
+    },
+    pastProblems : {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'ParsonProblem'
+            }
+        ]
     }
 });
 
