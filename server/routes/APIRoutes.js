@@ -1,14 +1,11 @@
+const dotenv = require('dotenv');
 const router = require('express').Router();
 const ParsonProblem = require('../models/parsonProblem');
-const Configuration = require('openai');
-const OpenAIApi = require('openai');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Configure the OpenAI API key
-const configuration = new Configuration({
-    apiKey: process.env.AI_API_KEY,  // Ensure this environment variable is set with your OpenAI API key
-});
+dotenv.config();
 
-const openai = new OpenAIApi(configuration);
+const genAI = new GoogleGenerativeAI(process.env.AI_API_KEY);
 
 // Route to generate a Parsons Problem using AI API
 router.post('/generate', async (req, res) => {
@@ -43,15 +40,13 @@ router.post('/generate', async (req, res) => {
     }
 
     try {
-        // Send the prompt to the OpenAI API
-        const response = await openai.chat.completions.create({
-            model: "davinci-002",  // Use the correct model identifier
-            messages: [{ role: "user", content: prompt }],
-            max_tokens: 500,
-            temperature: 0.5
-        });
+        const model = genAI.getGenerativeModel({ model: "gemini-pro"});
 
-        const generatedCode = response.data.choices[0].message.content.trim();
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+
+        const generatedCode = text.trim();
 
         // Process the code (split it into lines for Parsons Problem)
         const codeLines = generatedCode.split('\n');
