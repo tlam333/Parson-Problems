@@ -1,4 +1,6 @@
 // import {useNavigate} from "react-router-dom"
+import { Link } from 'react-router-dom';
+import '../styles/homeNavigation.css'
 
 const NavHome = () => {
     return (
@@ -17,8 +19,12 @@ const NavHome = () => {
               tabIndex={0}
               className="dropdown-content menu bg-black border border-orange-500 rounded-box w-52 p-2 shadow"
             >
-              <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#popup1">Login</a></li>
-              <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#popup2">Register</a></li>
+          <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/Profile'>Profile Analytics</Link></li>
+          <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/CategoriesPage'>Categories</Link></li>
+          <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/WorkPage'>Workspace</Link></li>
+          <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/SavedProblems'>Saved Problems</Link></li>
+          <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#popup1">Login</a></li>
+          <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#popup2">Register</a></li>
             </ul>
           </div>
 

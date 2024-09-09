@@ -1,10 +1,11 @@
 import NavMenu from "../components/NavMenu"
+import NavHome from "../components/NavHome"
 import "../styles/homeNavigation.css"
 
 const Home = () => {
     return (
         <>
-            <NavMenu/>
+            <NavHome/>
             <div className = "flex flex-col items-left h-lvh  align-bottom justify-bottom ">
                     
                     <div className="h-1/4"></div>
@@ -20,6 +21,8 @@ const Home = () => {
                         
                         <p>Tech Ballers TM</p>
                     </div>
+
+                    
 
                     {/* <!--Start Background Animation Body--> */}
                     <div class="area">
