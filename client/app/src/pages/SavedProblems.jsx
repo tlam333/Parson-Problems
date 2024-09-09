@@ -88,7 +88,14 @@ const SavedProblems = () => {
 
 
                 
+                <div className='flex flex-row h-1/6 w-5/6 m-auto bg-orange-300 rounded-md'>
+                    <button className='pl-2 pr-2 bg-orange-500 text-xl w-auto h-1/3 rounded-md font-bold text-white'>Filter By</button>
+                    <div className='flex flex-row'>
+                        
+                        <span className=''></span>
 
+                    </div>
+                </div>
                 <div className='overflow-y-auto  border-orange-500 mt-10 border-2 w-5/6 h-4/6 bg-black m-auto flex flex-col'>
                     <table className='table-auto h-auto w-full m-auto'>
                         <thead className='sticky top-0'>
