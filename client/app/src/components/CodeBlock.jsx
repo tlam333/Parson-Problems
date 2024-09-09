@@ -1,7 +1,7 @@
 const CodeBlock = ({item}) => {
     return (
 
-        <div className='text-white font-bold flex-col bg-orange-500 rounded-md'>{item}</div>
+        <div className='text-white font-bold flex-col' style={{ backgroundColor: '#aeb0b0' }}>{item}</div>
 
 
     )
