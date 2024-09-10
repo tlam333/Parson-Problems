@@ -14,11 +14,20 @@ const userStatsSchema = new Schema({
     problemsSkipped: {
         type: Number,
         default: 0
+    },
+    timeSpent: {
+        type: Number,
+        default: 0
     }
 });
 
 userStatsSchema.virtual('correctProblemsRatio').get(() => {
     const num = this.correctProblems / this.totalProblems;
+    return parseFloat(num.toFixed(2));
+});
+
+userStatsSchema.virtual('averageTimeSpentPerProblem').get(() => {
+    const num = this.timeSpent / this.totalProblems;
     return parseFloat(num.toFixed(2));
 });
 
@@ -34,11 +43,12 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    email : {
+    email : { 
         type: String,
         unique: true,
         match: [/.+@.+\..+/, 'Please enter a valid email address'],
-        required: true
+        sparse: true,
+        default: null
     },
     role: {
         type: String,
@@ -46,14 +56,24 @@ const userSchema = new Schema({
         default: 'user'
     },
     refreshToken: {
-        type: String
+        type: String,
+        default: null
     },
     description : {
-        type: String
+        type: String,
+        default: null
     },
     stats: {
         type: userStatsSchema,
         default: {}
+    },
+    pastProblems : {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'ParsonProblem'
+            }
+        ]
     }
 });
 

@@ -19,7 +19,7 @@ exports.handleRefreshToken = async (req, res) => {
 
         // If no user found, tokens may have been tampered with
         if (!user) {
-            res.sendstatus(403);
+            return res.sendStatus(403);
         }
 
         // If user found convert object id to string (For comparison with 'decoded.id')
@@ -29,12 +29,15 @@ exports.handleRefreshToken = async (req, res) => {
             refreshToken,
             config.refresh_token_secret,
             (error, decoded) => {
-                if (error || userId !== decoded.id) {
+                if (error || userId !== decoded.sub) {
                     return res.sendStatus(403);
                 }
 
                 const accessToken = jwt.sign(
-                    { "id": user._id },
+                    {
+                        "sub": user._id,
+                        "role": user.role
+                    },
                     config.access_token_secret,
                     { expiresIn: "5m" }
                 );
@@ -48,10 +51,10 @@ exports.handleRefreshToken = async (req, res) => {
                     maxAge: 5 * 60 * 1000 // 5 mins
                 });
             }
-        )
-        res.sendStatus(200);
+        );
+        return res.sendStatus(200);
         
     } catch (error) {
-        res.status(400).send(`Internal Server Error: "${error}"`)
+        return res.status(500).send(`Internal Server Error: "${error}"`)
     }
 }

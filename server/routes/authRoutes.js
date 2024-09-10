@@ -1,13 +1,14 @@
 const express = require('express');
-const userController = require('../controllers/authController');
+const authController = require('../controllers/authController');
 const router = express.Router();
 const verifyJWT = require('../middleware/verifyJWT');
 
 
 
 //  '/login'
-router.post('/login', userController.login);
-router.post('/register', userController.register);
+router.post('/login', authController.login);
+router.post('/register', authController.register);
+router.delete('/logout', authController.logout);
 
 
 router.get('/testmiddleware', verifyJWT, (req, res) => { res.send('sigma') });
