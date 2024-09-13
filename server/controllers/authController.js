@@ -19,7 +19,7 @@ exports.login = async (req, res) => {
         if (passwordMatches) {
             const accessToken = jwt.sign(
                 {
-                    "sub": user._id,
+                    "sub": String(user._id),
                     "role": user.role
                 },
                 config.access_token_secret,
@@ -28,7 +28,7 @@ exports.login = async (req, res) => {
 
             const refreshToken = jwt.sign(
                 {
-                    "sub": user._id,
+                    "sub": String(user._id),
                     "role": user.role
                 },
                 config.refresh_token_secret,
@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
                 httpOnly: true,
                 /* secure: process.env.NODE_ENV === 'production' */
                 sameSite: 'Lax',    // To prevent CSRF (Cross Site Reqest Forgery)
-                maxAge: 5 * 60 * 1000 // 5 mins
+                maxAge: 1 * 60 * 1000 // 1 mins
             });
 
             res.cookie('refresh_token', refreshToken, {
@@ -106,44 +106,25 @@ exports.register = async (req, res) => {
  */
 exports.logout = async (req, res) => {
     try {
-        const cookies = req.cookies;
+        // Get refresh token from cookies
+        const { refresh_token: refreshToken } = req.cookies;
 
-        // Check if request contains the cookie with the user's refresh token
-        if (!cookies?.refresh_token) {
-            return res.sendStatus(401);
+        if (!refreshToken) {
+            return res.status(400).json({ message: "No refresh token found." });
         }
 
-        const refreshToken = cookies.refresh_token;
-
-        const user = await User.findOne({ refreshToken: refreshToken });
-
-        // Tampered token or user already logged out as there is no Token
-        if (!user) {
-            return res.sendStatus(403);
-        }
-
-        const userId = user._id.toString();
-
-        // Verify JWT against 'refresh_token_secret'
-        jwt.verify(
-            refreshToken,
-            config.refresh_token_secret,
-            (error, decoded) => {
-
-                // If error occurs or if found 'userId' is not equal to the JWT 'id' then user is not authenticated (can't log out if you're not logged in already and you can't log out other users duhhhhhh)
-                if (error || userId !== decoded.sub) {
-                    return res.sendStatus(403);
-                }
-
-                // console.log(`User:\n\n${decoded.id}\n${user.userName}\n${refreshToken}\n\nIs now logged out`);
-            }
+        // Invalidate the refresh token (remove it from the database)
+        await User.updateOne(
+            { refreshToken: refreshToken }, 
+            { $unset: { refreshToken: 1 } } // Remove the refresh token
         );
 
-        user.refreshToken = null;
-        await user.save();
-        return res.sendStatus(200);
+        // Clear cookies (remove tokens from the client)
+        res.clearCookie('access_token', { httpOnly: true, sameSite: 'Lax' });
+        res.clearCookie('refresh_token', { httpOnly: true, sameSite: 'Lax' });
 
+        res.status(200).json({ message: "Logout successful" });
     } catch (error) {
-        return res.status(500).send(`Internal Server Error: "${error}"`);
+        res.status(500).json({ message: "Error logging out" });
     }
 }

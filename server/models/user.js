@@ -21,12 +21,14 @@ const userStatsSchema = new Schema({
     }
 });
 
-userStatsSchema.virtual('correctProblemsRatio').get(() => {
+userStatsSchema.virtual('correctProblemsRatio').get(function () {
+    if (this.totalProblems === 0) return 0;
     const num = this.correctProblems / this.totalProblems;
     return parseFloat(num.toFixed(2));
 });
 
-userStatsSchema.virtual('averageTimeSpentPerProblem').get(() => {
+userStatsSchema.virtual('averageTimeSpentPerProblem').get(function () {
+    if (this.totalProblems === 0) return 0;
     const num = this.timeSpent / this.totalProblems;
     return parseFloat(num.toFixed(2));
 });
@@ -76,5 +78,9 @@ const userSchema = new Schema({
         ]
     }
 });
+
+// Virtual fields not included by default so we gotta explicitly tell mongoose to include
+userSchema.set('toJSON', { virtuals: true });
+userSchema.set('toObject', { virtuals: true });
 
 module.exports = mongoose.model('User', userSchema);
