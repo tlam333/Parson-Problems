@@ -14,11 +14,22 @@ const userStatsSchema = new Schema({
     problemsSkipped: {
         type: Number,
         default: 0
+    },
+    timeSpent: {
+        type: Number,
+        default: 0
     }
 });
 
-userStatsSchema.virtual('correctProblemsRatio').get(() => {
+userStatsSchema.virtual('correctProblemsRatio').get(function () {
+    if (this.totalProblems === 0) return 0;
     const num = this.correctProblems / this.totalProblems;
+    return parseFloat(num.toFixed(2));
+});
+
+userStatsSchema.virtual('averageTimeSpentPerProblem').get(function () {
+    if (this.totalProblems === 0) return 0;
+    const num = this.timeSpent / this.totalProblems;
     return parseFloat(num.toFixed(2));
 });
 
@@ -34,11 +45,12 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    email : {
+    email : { 
         type: String,
         unique: true,
         match: [/.+@.+\..+/, 'Please enter a valid email address'],
-        required: true
+        sparse: true,
+        default: null
     },
     role: {
         type: String,
@@ -46,15 +58,29 @@ const userSchema = new Schema({
         default: 'user'
     },
     refreshToken: {
-        type: String
+        type: String,
+        default: null
     },
     description : {
-        type: String
+        type: String,
+        default: null
     },
     stats: {
         type: userStatsSchema,
         default: {}
+    },
+    pastProblems : {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'ParsonProblem'
+            }
+        ]
     }
 });
+
+// Virtual fields not included by default so we gotta explicitly tell mongoose to include
+userSchema.set('toJSON', { virtuals: true });
+userSchema.set('toObject', { virtuals: true });
 
 module.exports = mongoose.model('User', userSchema);

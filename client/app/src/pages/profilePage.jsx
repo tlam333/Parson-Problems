@@ -1,18 +1,35 @@
-import React from 'react';
-import NavMenu from '../components/NavMenu.jsx';
+import React, { useState } from "react";
+import NavMenu from "../components/NavMenu"
 
 const ProfileBody = () => {
+  // State to manage the input value
+  const [username, setUsername] = useState("username");
+
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center text-center font-sans">
+    <div className="min-h-screen bg-black text-white flex flex-col items-center  text-center font-sans">
+      <div className="mb-10">
+        <br />
+        <h1 className = "text-5xl font-bold">
+            Profile <span className="text-orange-500">Analytics </span>
+        </h1>
+        </div>
+      <br />
+      <br />
       {/* Profile Information */}
       <div className="mb-8">
-        <div className="w-24 h-24 bg-gray-400 rounded-full mx-auto"></div> {/* Avatar */}
-        <div className="mt-4">
-          <h1 className="text-4xl font-bold">
-            username <span className="text-lg">✏️</span>
-          </h1>
-          <br />
-          <p className="mt-2 text-orange-500">⭐ On a 4 Question Streak!</p>
+        <div className="w-24 h-24 bg-gray-400 rounded-full mx-auto"></div>{" "}
+        {/* Avatar */}
+        <div className="mt-4 flex justify-center items-center">
+          <div className="flex items-center">
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)} // Update state on input change
+              className="text-4xl text-white font-bold bg-transparent border-none focus:outline-none focus:ring-0 text-center"
+              placeholder="Enter your username"
+            />
+            <span className="text-lg ml-2">✏️</span>
+          </div>
         </div>
       </div>
 
