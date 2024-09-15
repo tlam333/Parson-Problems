@@ -10,6 +10,7 @@ const genAI = new GoogleGenerativeAI(process.env.AI_API_KEY);
 // Route to generate a Parsons Problem using AI API
 router.post('/generate', async (req, res) => {
     const { topic } = req.body;
+    console.log(req.body);
 
     // Construct the prompt based on the selected topic
     let prompt = 'you are a parsons problem generator, for student to learn basic code. Do not generate any description and only generate the code, also generate all in one code block so that it can be read by my app. This is the prompt:';
