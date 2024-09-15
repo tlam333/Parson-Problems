@@ -7,6 +7,6 @@ const parsonsProblemsController = require('../controllers/parsonsProblemsControl
  */
 router.post('/', parsonsProblemsController.createParsonProblem);
 
-router.get('/:parsonId', parsonsProblemsController.getFeedback);
+router.post('/submit/:id', parsonsProblemsController.submitSolution);
 
 module.exports = router;

@@ -3,6 +3,26 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const parsonProblemSchema = new Schema({
+    prompt: {
+        type: String,
+        required: true
+    },
+    topic: {
+        type: String,
+        required: true
+    },
+    theme: {
+        type: String,
+        required: true
+    },
+    correctBlocks: {
+        type: [String],
+        required: true 
+    }, // Array of strings for the correct code lines
+    scrambledBlocks: {
+        type: [String],
+        required: true
+    }, // Array of strings for the scrambled code lines
     userOwner: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -10,23 +30,7 @@ const parsonProblemSchema = new Schema({
     ipAddress: {
         type: String,
         required: true 
-    },
-    prompt: {
-        type: String,
-        required: true
-    }, 
-    description: {
-        type: String,
-        required: true
-    },
-    blocks: {
-        type: [String],
-        required: true 
-    }, // Array of strings for the correct code lines
-    solution: {
-        type: [String],
-        required: true
-    } // Array of strings for the scrambled code lines
+    }
 }, {
     timestamps: true,  // add createdAt and updatedAt timestamps
 });
