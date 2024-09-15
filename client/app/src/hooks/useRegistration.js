@@ -1,5 +1,4 @@
 import {useState} from 'react'
-import {useAuthContext} from './useAuthContext.js'
 
 export const useRegistration = () => {
     const [isLoading, setIsLoading] = useState(false)
