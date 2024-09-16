@@ -15,7 +15,7 @@ const Categories = ({ categories }) => {
                         <p>{category.description}</p>
                         </Link>
                         <Link to ="/WorkPage">
-                        <p>Subtopic</p>
+                        <p>{category.subtopic}</p>
                         </Link>
                         <div className="card-actions justify-end">
                         <Link to ="/WorkPage">
