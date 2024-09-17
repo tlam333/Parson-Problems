@@ -4,7 +4,7 @@
  * @returns {String} - The joined code string.
  */
 const joinCodeLines = (codeLines) => {
-    return codeLines.map(line => line.replace(/"/g, '\\"')).join('; ');
+    return codeLines.map(line => line.replace(/"/g, '\\"')).join('\n');
 }
 
 module.exports = { joinCodeLines };
