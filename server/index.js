@@ -1,19 +1,19 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const config = require('./config/config.js');
+
+// Routers
 const authRoutes = require('./routes/authRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
+const adminRoutes = require('./routes/adminRoutes.js');
 const testRoutes = require('./routes/testRoutes.js');
 const parsonsProblemsRoutes = require('./routes/parsonsProblemsRoutes.js');
-const cookieParser = require('cookie-parser');
-const { spawn } = require('child_process');
 
 
+// Middleware
 const requestHandler = require('./middleware/requestHandler.js');
-
-
-require('dotenv').config();
 
 const app = express();
 
@@ -25,10 +25,12 @@ app.use(cors());
 app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
-app.use('/api/test', requestHandler, testRoutes);
 
-app.use('/api/users', requestHandler, userRoutes);
-app.use('/api/parsonProblem', requestHandler, parsonsProblemsRoutes);
+app.use(requestHandler);
+app.use('/api/test', testRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/parsonProblem', parsonsProblemsRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 mongoose.connect(config.db.uri, config.db.options)
