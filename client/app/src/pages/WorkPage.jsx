@@ -19,9 +19,9 @@ const WorkPage = () => {
     })
     .then((result) => {return result.json()})
     .then((data) => {updateLines(data.scrambledBlocks)})
-
-
   }
+
+  const handleSubmit = () => {}
 
 
   const onDragEnd = (result) => {
@@ -119,7 +119,7 @@ const WorkPage = () => {
             <button onClick = {generateProblem} className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded">
               Regenerate
             </button>
-            <button className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded">
+            <button onClick = {handleSubmit} className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded">
               Submit
             </button>
             </div>
