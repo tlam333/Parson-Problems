@@ -1,28 +1,36 @@
 import NavMenu from "../components/NavMenu";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { useState } from "react";
+import { useState, useEffect} from "react";
+import {useLocation} from "react-router-dom"
 import CodeBlock from "../components/CodeBlock.jsx";
 
 const WorkPage = () => {
   let url = "http://localhost:3001/api/parsonProblem/"
   let [lines, updateLines] = useState([]);
   let [answerLines, updateAnswerLines] = useState([]);
+  const location = useLocation() 
+  let promptData = {topic: location.state.topic, theme: location.state.subtopic}
 
   // ?topic=Correlation&theme=thomas
   const generateProblem = () => {
+    console.log(location)
+    console.log(promptData)
+
     fetch(url, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'},
-      body: JSON.stringify({topic : "Correlation", theme :"thomas"}),
+      body: JSON.stringify({topic: "Correlation", theme: "thomas"}),
     })
     .then((result) => {return result.json()})
-    .then((data) => {updateLines(data.scrambledBlocks)})
+    .then((data) => {console.log(data.scrambledBlocks) 
+      updateLines(data.scrambledBlocks)})
   }
 
-  const handleSubmit = () => {}
-
+  const handleSubmit = () => {
+    
+  }
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
@@ -70,6 +78,11 @@ const WorkPage = () => {
       }
     }
   };
+
+  useEffect (()=>{
+    console.log(location)
+  })
+
 
   return (
     <div className="overflow-scroll bg-black h-lvh">
