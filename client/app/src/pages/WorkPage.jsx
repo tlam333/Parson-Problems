@@ -4,30 +4,25 @@ import { useState } from "react";
 import CodeBlock from "../components/CodeBlock.jsx";
 
 const WorkPage = () => {
-  const problemObject = {
-    id: "problem-1",
-    content: [
-      "Test line 1",
-      "Test line 2",
-      "Test line 3",
-      "Test line 4",
-      "Test line 5",
-      "Test line 6",
-      "Test line 7",
-      "Test line 8",
-      "Test line 9",
-      "Test line 10",
-      "Test line 11",
-      "Test line 12",
-      "Test line 13",
-      "Test line 14",
-      "Test line 15",
-      "Test line 16"
-    ],
-  };
-
-  let [lines, updateLines] = useState(problemObject.content);
+  let url = "http://localhost:3001/api/parsonProblem/"
+  let [lines, updateLines] = useState([]);
   let [answerLines, updateAnswerLines] = useState([]);
+
+  // ?topic=Correlation&theme=thomas
+  const generateProblem = () => {
+    fetch(url, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'},
+      body: JSON.stringify({topic : "Correlation", theme :"thomas"}),
+    })
+    .then((result) => {return result.json()})
+    .then((data) => {updateLines(data.scrambledBlocks)})
+
+
+  }
+
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
@@ -121,7 +116,7 @@ const WorkPage = () => {
 
             <br />
             <div className="flex justify-between w-full">
-            <button className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded">
+            <button onClick = {generateProblem} className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded">
               Regenerate
             </button>
             <button className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded">

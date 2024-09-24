@@ -52,7 +52,7 @@ const NavHome = () => {
       })
 
       if (res.status == 200){
-        dispatch({type: "REGISTER", payload: res.body})
+        dispatch({type: "LOGIN", payload: res.body})
         setLoading(false)
         navigate("/CategoriesPage", {replace : true})
       }
