@@ -29,7 +29,7 @@ const WorkPage = () => {
   }
 
   const handleSubmit = () => {
-    
+
   }
 
   const onDragEnd = (result) => {
@@ -81,6 +81,7 @@ const WorkPage = () => {
 
   useEffect (()=>{
     console.log(location)
+    generateProblem()
   })
 
 
