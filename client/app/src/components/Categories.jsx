@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 const Categories = ({ categories }) => {
     return (
@@ -10,12 +11,16 @@ const Categories = ({ categories }) => {
                     </figure>
                     <div className="card-body">
                         <h2 className="card-title">{category.title}</h2>
+                        <Link to ="/WorkPage">
                         <p>{category.description}</p>
+                        </Link>
+                        <Link to ="/WorkPage">
+                        <p>{category.subtopic}</p>
+                        </Link>
                         <div className="card-actions justify-end">
-                        <button className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded">
-  Learn now!
-</button>
-
+                        <Link to ="/WorkPage">
+                                <button className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded">Learn now!</button>
+                            </Link>
                         </div>
                     </div>
                 </div>
