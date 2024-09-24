@@ -82,7 +82,7 @@ const WorkPage = () => {
   useEffect (()=>{
     console.log(location)
     generateProblem()
-  })
+  },[])
 
 
   return (
