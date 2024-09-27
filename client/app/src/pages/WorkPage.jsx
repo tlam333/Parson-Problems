@@ -1,36 +1,41 @@
 import NavMenu from "../components/NavMenu";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { useState, useEffect} from "react";
-import {useLocation} from "react-router-dom"
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import CodeBlock from "../components/CodeBlock.jsx";
 
 const WorkPage = () => {
-  let url = "http://localhost:3001/api/parsonProblem/"
+  let url = "http://localhost:3001/api/parsonProblem/";
   let [lines, updateLines] = useState([]);
   let [answerLines, updateAnswerLines] = useState([]);
-  const location = useLocation() 
-  let promptData = {topic: location.state.topic, theme: location.state.subtopic}
+  const location = useLocation();
+  const [loading, setLoading] = useState(true); // Add loading state
+  let promptData = { topic: location.state.topic, theme: location.state.subtopic };
 
-  // ?topic=Correlation&theme=thomas
   const generateProblem = () => {
-    console.log(location)
-    console.log(promptData)
-
+    setLoading(true); // Set loading state to true when starting to fetch
     fetch(url, {
       method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'},
-      body: JSON.stringify({topic: "Correlation", theme: "thomas"}),
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ topic: "Correlation", theme: "thomas" }),
     })
-    .then((result) => {return result.json()})
-    .then((data) => {console.log(data.scrambledBlocks) 
-      updateLines(data.scrambledBlocks)})
-  }
+      .then((result) => result.json())
+      .then((data) => {
+        updateLines(data.scrambledBlocks);
+        setLoading(false); // Set loading state to false when data is fetched
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false); // Set loading state to false if there's an error
+      });
+  };
 
   const handleSubmit = () => {
-
-  }
+    // Submission logic
+  };
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
@@ -79,106 +84,116 @@ const WorkPage = () => {
     }
   };
 
-  useEffect (()=>{
-    console.log(location)
-    generateProblem()
-  },[])
-
+  useEffect(() => {
+    generateProblem(); // Call generateProblem when component mounts
+  }, []);
 
   return (
     <div className="overflow-scroll bg-black h-lvh">
       <NavMenu />
-      <div className="w-5/6 mx-auto">
-        <h1 className="text-white text-2xl font-semibold">Prompt</h1>
-        <div
-          className="w-full h-10"
-          style={{ backgroundColor: "#2d2e2e" }}
-        ></div>
-      </div>
 
-      {/* The interactive section of the workspace page. */}
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="h-full w-full p-10 flex bg-black flex-col items-center space-between md:flex-row justify-between">
-          <div className="flex-wrap bg-black w-full h-full rounded-md md:w-1/2">
-            <h1 className="text-white text-2xl font-semibold">Select</h1>
-
-            <Droppable droppableId="workspace-1">
-              {(provided, snapshot) => (
-                <div
-                  className="flex flex-col overflow-auto gap-2 w-full h-5/6 mb-1 p-4" // Added p-4 for padding
-                  ref={provided.innerRef}
-                  style={{ backgroundColor: "#2d2e2e" }}
-                  {...provided.droppableProps}
-                >
-                  {lines.map((line, index) => (
-                    <Draggable draggableId={line} index={index} key={line}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <CodeBlock item={line} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-
-            <br />
-            <div className="flex justify-between w-full">
-            <button onClick = {generateProblem} className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded">
-              Regenerate
-            </button>
-            <button onClick = {handleSubmit} className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded">
-              Submit
-            </button>
-            </div>
+      {/* Display loading animation while loading */}
+      {loading ? (
+        <div className="flex justify-center items-center h-full">
+          <span className="loading loading-bars loading-lg"></span>
+        </div>
+      ) : (
+        // Render this only when not loading
+        <>
+          <div className="w-5/6 mx-auto">
+            <h1 className="text-white text-2xl font-semibold">Prompt</h1>
+            <div className="w-full h-10" style={{ backgroundColor: "#2d2e2e" }}></div>
           </div>
 
-          <div className="flex-wrap bg-black w-full h-full md:w-2/5">
-            <h1 className="text-white text-2xl font-semibold">
-              Drag & Drop here
-            </h1>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <div className="h-full w-full p-10 flex bg-black flex-col items-center space-between md:flex-row justify-between">
+              <div className="flex-wrap bg-black w-full h-full rounded-md md:w-1/2">
+                <h1 className="text-white text-2xl font-semibold">Select</h1>
 
-            <Droppable droppableId="workspace-2">
-              {(provided, snapshot) => (
-                <div
-                  className="flex flex-col overflow-auto gap-2 w-full h-5/6 bg-black mb-1 p-4" // Added p-4 for padding
-                  style={{ backgroundColor: "#2d2e2e" }}
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                >
-                  {answerLines.map((line, index) => (
-                    <Draggable draggableId={line} index={index} key={line}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <CodeBlock item={line} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
+                <Droppable droppableId="workspace-1">
+                  {(provided, snapshot) => (
+                    <div
+                      className="flex flex-col overflow-auto gap-2 w-full h-5/6 mb-1 p-4"
+                      ref={provided.innerRef}
+                      style={{ backgroundColor: "#2d2e2e" }}
+                      {...provided.droppableProps}
+                    >
+                      {lines.map((line, index) => (
+                        <Draggable draggableId={line} index={index} key={line}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <CodeBlock item={line} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+
+                <br />
+                <div className="flex justify-between w-full">
+                  <button
+                    onClick={generateProblem}
+                    className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded"
+                  >
+                    Regenerate
+                  </button>
+                  <button
+                    onClick={handleSubmit}
+                    className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded"
+                  >
+                    Submit
+                  </button>
                 </div>
-              )}
-            </Droppable>
-              <br />
-              <h1 className="text-white text-2xl font-semibold">Feedback</h1>
-            <div
+              </div>
+
+              <div className="flex-wrap bg-black w-full h-full md:w-2/5">
+                <h1 className="text-white text-2xl font-semibold">
+                  Drag & Drop here
+                </h1>
+
+                <Droppable droppableId="workspace-2">
+                  {(provided, snapshot) => (
+                    <div
+                      className="flex flex-col overflow-auto gap-2 w-full h-5/6 bg-black mb-1 p-4"
+                      style={{ backgroundColor: "#2d2e2e" }}
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                    >
+                      {answerLines.map((line, index) => (
+                        <Draggable draggableId={line} index={index} key={line}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <CodeBlock item={line} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+                <br />
+                <h1 className="text-white text-2xl font-semibold">Feedback</h1>
+                <div
                   className="flex flex-col overflow-auto gap-2 w-full h-1/6 mb-1 p-4"
                   style={{ backgroundColor: "#2d2e2e" }}
                 ></div>
-
-          </div>
-        </div>
-      </DragDropContext>
+              </div>
+            </div>
+          </DragDropContext>
+        </>
+      )}
     </div>
   );
 };
