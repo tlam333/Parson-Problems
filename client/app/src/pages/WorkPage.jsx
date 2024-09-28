@@ -10,27 +10,29 @@ const WorkPage = () => {
   let [answerLines, updateAnswerLines] = useState([]);
   const location = useLocation();
   const [loading, setLoading] = useState(true); // Add loading state
-  let promptData = { topic: location.state.topic, theme: location.state.subtopic };
+  let promptData;
 
   const generateProblem = () => {
-    setLoading(true); // Set loading state to true when starting to fetch
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({ topic: "Correlation", theme: "thomas" }),
-    })
-      .then((result) => result.json())
-      .then((data) => {
-        updateLines(data.scrambledBlocks);
-        setLoading(false); // Set loading state to false when data is fetched
+    if (promptData != null){
+      setLoading(true); // Set loading state to true when starting to fetch
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ topic: "Correlation", theme: "thomas" }),
       })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false); // Set loading state to false if there's an error
-      });
+        .then((result) => result.json())
+        .then((data) => {
+          updateLines(data.scrambledBlocks);
+          setLoading(false); // Set loading state to false when data is fetched
+        })
+        .catch((err) => {
+          console.error(err);
+          setLoading(false); // Set loading state to false if there's an error
+        });
+    }
   };
 
   const handleSubmit = () => {
@@ -85,7 +87,14 @@ const WorkPage = () => {
   };
 
   useEffect(() => {
-    generateProblem(); // Call generateProblem when component mounts
+    console.log(location.state)
+    if (location.state != null){
+      promptData = { topic: location.state.topic, theme: location.state.subtopic };
+      generateProblem(); // Call generateProblem when component mounts
+    } else {
+      setLoading(false);
+    }
+    
   }, []);
 
   return (
