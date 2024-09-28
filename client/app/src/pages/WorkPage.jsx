@@ -10,9 +10,14 @@ const WorkPage = () => {
   let [answerLines, updateAnswerLines] = useState([]);
   const location = useLocation();
   const [loading, setLoading] = useState(true); // Add loading state
-  let promptData;
+  const [promptObj, setPromptObj] = useState({})
+  const [promptData, setPromptData] = useState();
 
   const generateProblem = () => {
+    if (answerLines.length > 0 || lines.length > 0){
+      updateAnswerLines([])
+      updateLines([])
+    }
     if (location.state != null){
       setLoading(true); // Set loading state to true when starting to fetch
       fetch(url, {
@@ -25,6 +30,8 @@ const WorkPage = () => {
       })
         .then((result) => result.json())
         .then((data) => {
+          setPromptObj(data)
+          console.log(promptObj)
           updateLines(data.scrambledBlocks);
           setLoading(false); // Set loading state to false when data is fetched
         })
@@ -37,6 +44,13 @@ const WorkPage = () => {
 
   const handleSubmit = () => {
     // Submission logic
+    console.log(promptObj)
+    if (promptObj.correctBlocks.toString() == answerLines.toString()) {
+      console.log("CORRECT")
+    } else {
+      console.log("fuckn wrong")
+    }
+
   };
 
   const onDragEnd = (result) => {
@@ -89,7 +103,7 @@ const WorkPage = () => {
   useEffect(() => {
     console.log(location.state)
     if (location.state != null){
-      promptData = { topic: location.state.topic, theme: location.state.subtopic };
+      setPromptData({ topic: location.state.topic, theme: location.state.subtopic });
       generateProblem(); // Call generateProblem when component mounts
     } else {
       setLoading(false);

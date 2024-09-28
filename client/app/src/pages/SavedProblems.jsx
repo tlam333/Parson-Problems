@@ -2,36 +2,6 @@
 import { createElement } from 'react';
 import NavMenu from "../components/NavMenu";
 
-function FetchProblems(){
-    let problems;
-    /*
-        Call backend API route that fetches 
-        all problem names, category tags, and
-        their solved status.  
-
-        data format returned by backend should be 
-                [   {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"}
-                ]
-    */
-   return problems
-};
-
-function CategoryItem({name}){
-    return (
-        <div className="category-item">
-            <p>{name}</p>
-        </div>
-    )
-}
-
 // In future SavedProblems([categories])
 const SavedProblems = () => {
     // let problems = fetchProblems();
@@ -82,7 +52,7 @@ const SavedProblems = () => {
 
     return (
 
-        <div className='h-lvh bg-black'>
+    <div className='h-lvh bg-black'>
 
     <NavMenu />
             
