@@ -9,23 +9,24 @@ const WorkPage = () => {
   let [lines, updateLines] = useState([]);
   let [answerLines, updateAnswerLines] = useState([]);
   const location = useLocation() 
-  let promptData = {topic: location.state.topic, theme: location.state.subtopic}
+  let promptData;
 
   // ?topic=Correlation&theme=thomas
   const generateProblem = () => {
     console.log(location)
     console.log(promptData)
-
-    fetch(url, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'},
-      body: JSON.stringify({topic: "Correlation", theme: "thomas"}),
-    })
-    .then((result) => {return result.json()})
-    .then((data) => {console.log(data.scrambledBlocks) 
-      updateLines(data.scrambledBlocks)})
+    if (promptData != null){
+      fetch(url, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'},
+        body: JSON.stringify({topic: "Correlation", theme: "thomas"}),
+      })
+      .then((result) => {return result.json()})
+      .then((data) => {console.log(data.scrambledBlocks) 
+        updateLines(data.scrambledBlocks)})
+    }
   }
 
   const handleSubmit = () => {
@@ -81,7 +82,12 @@ const WorkPage = () => {
 
   useEffect (()=>{
     console.log(location)
-    generateProblem()
+    if (location.state != null){
+      promptData = {topic: location.state.topic, theme: location.state.subtopic}
+      generateProblem()
+    }
+    
+    
   },[])
 
 
