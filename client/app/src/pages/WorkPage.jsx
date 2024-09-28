@@ -13,7 +13,7 @@ const WorkPage = () => {
   let promptData;
 
   const generateProblem = () => {
-    if (promptData != null){
+    if (location.state != null){
       setLoading(true); // Set loading state to true when starting to fetch
       fetch(url, {
         method: "POST",
