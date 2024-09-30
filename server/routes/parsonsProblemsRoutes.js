@@ -1,5 +1,4 @@
 const router = require('express').Router();
-let ParsonProblem = require('../models/parsonProblem');
 const parsonsProblemsController = require('../controllers/parsonsProblemsController');
 
 /**
