@@ -4,6 +4,46 @@ const geminiInterface = require('../Interfaces/geminiInterface');
 const pythonInterface = require('../Interfaces/pythonInterface');
 const { joinCodeLines } = require('../helpers/helpers');
 
+exports.getProblem = async (req, res) => {
+    try {
+        const parsonProblem = await ParsonProblem.findById(req.params.id);
+
+        // If no problems found, send a 404 response
+        if (!parsonProblem) {
+            return res.status(404).send({ message: 'Parson Problem does not exist' });
+        }
+
+        // Send the found problems as a response
+        res.status(200).json(parsonProblem);
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.getPastProblems = async (req, res) => {
+    try {
+        // Find the user by their ID (assuming req.sub contains the logged-in user's ID)
+        const user = await User.findById(req.params.id).populate('pastProblems');
+
+        // If the user doesn't exist, return a 404 error
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // If the user has no past problems, return a 404 with a message
+        if (!user.pastProblems || user.pastProblems.length === 0) {
+            return res.status(404).json({ message: 'No past problems found for this user' });
+        }
+
+        // Send the past problems in the response
+        res.status(200).json(user.pastProblems);
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ error: error.message });
+    }
+};
+
 exports.createParsonProblem = async (req, res) => {
     try {
         // Extract information to create the Parson Problem
@@ -53,7 +93,8 @@ exports.createParsonProblem = async (req, res) => {
         res.status(200).send({
             problemId: newProblem._id,
             prompt: newProblem.prompt,
-            scrambledBlocks: newProblem.scrambledBlocks
+            scrambledBlocks: newProblem.scrambledBlocks,
+            correctBlocks: newProblem.correctBlocks
         });
 
     } catch (error) {

@@ -9,4 +9,8 @@ router.post('/', parsonsProblemsController.createParsonProblem);
 
 router.post('/submit/:id', parsonsProblemsController.submitSolution);
 
+router.get('/:id', parsonsProblemsController.getProblem);
+
+router.get('/past/:id', parsonsProblemsController.getPastProblems);
+
 module.exports = router;
