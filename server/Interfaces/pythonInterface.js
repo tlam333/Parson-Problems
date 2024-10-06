@@ -1,99 +1,82 @@
-const { PythonShell } = require('python-shell');
-const path = require('path');
-const { joinCodeLines } = require('../helpers/helpers');
-const ParsonProblem = require('../models/parsonProblem');
+const tmp = require('tmp');
+const fs = require('fs');
+const { exec } = require('child_process');
+const util = require('util');
 
+const execPromise = util.promisify(exec);
+const writeFilePromise = util.promisify(fs.writeFile);
 
-/**
- * Manages the execution of Python code to validate a problem solution.
- * 
- * This function compares the output of the user's code against the expected output from the problem's correct solution.
- * It provides feedback based on whether the user's solution is correct, incorrect, or contains errors.
- *
- * @param {ParsonProblem} problem - An instance of the `ParsonProblem` model, which includes:
- *   - `correctBlocks` (Array<String>): The correct code blocks that should be executed to produce the expected result.
- * 
- * @returns {Promise<String>} A promise that resolves to a feedback message based on the execution results:
- *   - If there is an error in the user's code, the feedback will include the error message.
- *   - If the user's output matches the correct output, the feedback will confirm correctness.
- *   - If the user's output does not match the correct output, the feedback will detail the discrepancy.
- * 
- * @throws {Error} Throws an error if there is an issue executing the Python code or processing the problem.
- */
-const managePythonExecution = async (problem, userCode) => {
-    try {
-        const correctCodeString = joinCodeLines(problem.correctBlocks);
-        const correctOutput = await executePythonCode(correctCodeString);
-        const correctStdout = correctOutput.stdout;
+const cleanTerminalMessage = (messages) => {
+    // Regex to match and capture line and character positions
+    const captureRegex = /:(\d+):(\d+):/;
+    // Regex to remove file path and .py extension
+    const filePathRegex = new RegExp(`.*${'.py'}`);
 
-        const userCodeString = joinCodeLines(userCode);
-        const userOutput = await executePythonCode(userCodeString);
-        const userStdout = userOutput.stdout;
-        const userStderr = userOutput.stderr;
+    return messages
+        .map(message => {
+            // Extract line and character positions
+            const match = message.match(captureRegex);
+            const line = match ? match[1] : '';
+            const char = match ? match[2] : '';
 
-        let result;
+            // Remove the captured line and character positions and file path
+            const cleanedMessage = message
+                .replace(captureRegex, '') // Remove line and character positions
+                .replace(filePathRegex, ''); // Remove file path and .py extension
 
-        if (userStderr) {
-            // If there's an error in the user's code, provide it as feedback
-            result = {
-                passed: false,
-                feedback: `There was an error in your code:\r\n${userStderr}`
-            };
-        } else if (userStdout.trim() === correctStdout.trim()) {
-            result = {
-                passed: true,
-                feedback: `Correct! Your code produced the expected output.\r\nYour output: ${userStdout}`
-            };
-        } else {
-            result = {
-                passed: false,
-                feedback: `Your output does not match the correct output.\r\nYour output: ${userStdout}\r\nCorrect output: ${correctStdout}`
-            };
-        }
+            // Format and prepend line and char to the cleaned message
+            const formattedMessage = line && char 
+                ? `Line ${line}: ${cleanedMessage.trim()}`
+                : cleanedMessage.trim();
 
-        return result;
-    } catch (error) {
-        throw error;
-    }
-}
+            // Return the formatted message
+            return formattedMessage;
+        })
+        .filter(message => message !== ''); // Remove empty messages
+};
 
+module.exports = pythonInterface = async (codeString) => {
 
+    let result = {};
 
-
-/**
- * Executes Python code and returns the output.
- * @param {String} codeString - The Python code to be executed.
- * @returns {Promise<{ stdout: String, stderr: String }>} - The result of the Python execution.
- */
-const executePythonCode = (codeString) => {
     return new Promise((resolve, reject) => {
-        const scriptPath = path.join(__dirname, '../python/exec.py');
-
-        const pyshell = new PythonShell(scriptPath, {
-            mode: 'text'
-        });
-
-        let output = '';
-        let error = '';
-
-        pyshell.send(codeString);
-
-        pyshell.on('message', (message) => {
-            output += message;
-        });
-
-        pyshell.on('stderr', (stderr) => {
-            error += stderr;
-        });
-
-        pyshell.end((err) => {
-            if (err || error) {
-                // Resolve with both output and error, do not throw
-                return resolve({ stdout: output.trim(), stderr: error.trim() });
+        tmp.file({ postfix: '.py', discardDescriptor: true }, async (err, path, fd, cleanupCallback) => {
+            if (err) {
+                return reject(err);
             }
-            resolve({ stdout: output.trim(), stderr: '' });
+
+            // console.log(`Temp file created at: ${path}`);
+
+            try {
+                await writeFilePromise(path, codeString);
+                // console.log('Data written to file');
+
+                const command = `flake8 ${path}`;
+                const { stdout } = await execPromise(`${command}`);
+
+                // If execPromise doesn't throw, test passed
+                // console.log('Test Passed');
+                result = {
+                    passed: true,
+                    terminalMessage: `Passed test cases`
+                };
+            } catch (error) {
+                // If an error occurs during exec, test failed
+                // console.log(`Test not passed: ${error}`);
+
+                // Process the flake8 output and remove only the file path, keeping the line and character info
+                const processedOutput = cleanTerminalMessage(error.stdout.split('\n'));
+
+                result = {
+                    passed: false,
+                    terminalMessage: processedOutput
+                };
+            } finally {
+                cleanupCallback(); // Clean up the temp file
+                // console.log(`At return:`);
+                // console.log(result);
+                resolve(result); // Return the result
+            }
         });
     });
-}
-
-module.exports = { managePythonExecution };
+};

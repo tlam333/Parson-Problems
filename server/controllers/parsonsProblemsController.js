@@ -1,8 +1,48 @@
 const ParsonProblem = require('../models/parsonProblem');
 const User = require('../models/user');
 const geminiInterface = require('../Interfaces/geminiInterface');
-const { managePythonExecution } = require('../Interfaces/pythonInterface');
-const { login } = require('./authController');
+const pythonInterface = require('../Interfaces/pythonInterface');
+const { joinCodeLines } = require('../helpers/helpers');
+
+exports.getProblem = async (req, res) => {
+    try {
+        const parsonProblem = await ParsonProblem.findById(req.params.id);
+
+        // If no problems found, send a 404 response
+        if (!parsonProblem) {
+            return res.status(404).send({ message: 'Parson Problem does not exist' });
+        }
+
+        // Send the found problems as a response
+        res.status(200).json(parsonProblem);
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.getPastProblems = async (req, res) => {
+    try {
+        // Find the user by their ID (assuming req.sub contains the logged-in user's ID)
+        const user = await User.findById(req.params.id).populate('pastProblems');
+
+        // If the user doesn't exist, return a 404 error
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // If the user has no past problems, return a 404 with a message
+        if (!user.pastProblems || user.pastProblems.length === 0) {
+            return res.status(404).json({ message: 'No past problems found for this user' });
+        }
+
+        // Send the past problems in the response
+        res.status(200).json(user.pastProblems);
+    } catch (error) {
+        // Handle errors
+        res.status(500).json({ error: error.message });
+    }
+};
 
 exports.createParsonProblem = async (req, res) => {
     try {
@@ -14,7 +54,7 @@ exports.createParsonProblem = async (req, res) => {
         let newProblem = null; // Declare newProblem once
 
         // Check if the user is logged in
-        if (login) {
+        if (req.login) {
             // Create problem with reference to the logged-in user
             newProblem = new ParsonProblem({
                 userOwner: req.sub, // Assuming req.sub contains the user ID
@@ -76,75 +116,47 @@ exports.submitSolution = async (req, res) => {
             return res.status(404).send({ error: 'Problem not found' });
         }
 
-        if (JSON.stringify(codeBlocks) === JSON.stringify(problem.correctBlocks)) {
-            
-            return res.status(200).send(
+
+        const result = await pythonInterface(joinCodeLines(codeBlocks));
+
+        // Correct
+        if (result.passed) {
+            const updatedUser = await User.findByIdAndUpdate(
+                req.sub,
+                { 
+                    $inc: 
+                    { 
+                        'stats.totalProblems': 1,
+                        'stats.correctProblems': 1
+                        // Add time taken to total time spent
+                    }
+                }, // Increment total problems by one
                 {
-                    passed: true,
-                    feedback: `Correct output!`
+                    new: true,
+                    runValidators: true
                 }
-            )
+            );
         } else {
-            return res.status(200).send(
+            const updatedUser = await User.findByIdAndUpdate(
+                req.sub,
+                { 
+                    $inc: 
+                    { 
+                        'stats.totalProblems': 1,
+                        // Add time taken to total time spent
+                    }
+                }, // Increment total problems by one
                 {
-                    passed: false,
-                    feedback: `Compilation Error!`
+                    new: true,
+                    runValidators: true
                 }
-            )
+            );
         }
 
+        return res.status(200).send(result);
+
     } catch (error) {
+        console.log(`parent`);
         return res.status(500).send(`Internal Server Error: ${error}`);
     }
-
-
-
-    /*
-    CBS Dealing with this right now
-
-    We'll come back to it later
-
-    ----------------------------------
-    Extra Validation / Python Response
-    ----------------------------------
-
-
-    */
-    /*if (!Array.isArray(userCode) || userCode.length === 0) {
-        return res.status(400).json({ error: 'Invalid user code input' });
-    }
-
-    try {
-        const problem = await ParsonProblem.findById(req.params.id);
-        if (!problem) {
-            return res.status(404).json({ error: 'Problem not found' });
-        }
-
-        let feedback = `Correct output!`;
-
-        if (userCode === problem.correctBlocks) {
-            return res.status(200).send(
-                {
-                    passed: true,
-                    feedback: `Correct output!`
-                }
-            )
-        } else {
-            feedback = await managePythonExecution(problem, userCode);
-        }
-
-        problem.feedback = feedback;
-        await problem.save();
-
-        return res.status(200).send(
-            {
-                passed: false,
-                feedback: feedback
-            }
-        );
-
-    } catch (error) {
-        console.error('Error during solution submission:', error);
-        return res.status(500).json({ error: 'Internal server error', details: error.message });
-    }*/
 };

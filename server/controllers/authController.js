@@ -16,10 +16,12 @@ exports.login = async (req, res) => {
         
         const passwordMatches = await bcrypt.compare(req.body.password, user.password);
 
+        const userId = String(user._id);
+
         if (passwordMatches) {
             const accessToken = jwt.sign(
                 {
-                    "sub": String(user._id),
+                    "sub": userId,
                     "role": user.role
                 },
                 config.access_token_secret,
@@ -28,7 +30,7 @@ exports.login = async (req, res) => {
 
             const refreshToken = jwt.sign(
                 {
-                    "sub": String(user._id),
+                    "sub": userId,
                     "role": user.role
                 },
                 config.refresh_token_secret,
@@ -53,7 +55,11 @@ exports.login = async (req, res) => {
                 maxAge: 7 * 24 * 60 * 60 * 1000     // 7 Days
             })
 
-            return res.sendStatus(200);
+            return res.status(200).send(
+                {
+                    id: userId
+                }
+            );
 
         } else {
             return res.status(401).send('User not found or incorrect password');

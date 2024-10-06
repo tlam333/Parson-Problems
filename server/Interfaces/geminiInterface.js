@@ -1,6 +1,7 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const config = require('../config/config');
-const fs = require('fs');
+const pythonInterface = require('../Interfaces/pythonInterface');
+const { joinCodeLines } = require('../helpers/helpers');
 
 
 const genAI = new GoogleGenerativeAI(config.ai_api_key);
@@ -71,36 +72,44 @@ exports.generateProblemViaGemini = async (topic, theme) => {
 
     try {
 
-        // Retrieves the gemini-pro model
-        const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+        for (let attempt = 1; attempt <=3; attempt++) {
+            // Retrieves the gemini-pro model
+            const model = genAI.getGenerativeModel({ model: "gemini-pro"});
 
-        // extract the response from gemini
-        const result = await model.generateContent(aiQuestion);
-        const geminiResponse = result?.response?.text();
+            // extract the response from gemini
+            const result = await model.generateContent(aiQuestion);
+            const geminiResponse = result?.response?.text();
 
-        if (!geminiResponse) {
-            throw new Error("No response received from the Gemini model");
-        }
-        
-        // Testing
-        // console.log(`The response:\n\n${geminiResponse}\n\n`)
-        /*fs.writeFile('./output.txt', geminiResponse, (err) => {
-            if (err) {
-                throw err;
-            } else {
-                // console.log('File saved at ./output.txt');
+            if (!geminiResponse) {
+                throw new Error("No response received from the Gemini model");
             }
-        });*/
 
-        // Basic formatting and removing code markers so the string (response.text) can be converted to JSON
-        const problemJSON = cleanJSON(geminiResponse);
+            // Basic formatting and removing code markers so the string (response.text) can be converted to JSON
+            console.log(`Response number ${attempt}`);
+            console.log(geminiResponse);
 
-        // Return the question prompt, scrambled blocks and solution
-        return { 
-            prompt: problemJSON['prompt'],
-            correctBlocks: problemJSON['codeBlocks'],
-            scrambledBlocks: [...problemJSON['codeBlocks']].sort(() => Math.random() - 0.5)
+            const problemJSON = cleanJSON(geminiResponse);
+
+
+            const runPython = await pythonInterface(joinCodeLines(problemJSON['codeBlocks']));
+
+            // If code works
+            if (runPython.passed) {
+                // Return the question prompt, scrambled blocks and solution
+
+                console.log(`Returned after ${attempt} iterations and running: ${runPython.passed}`);
+                return { 
+                prompt: problemJSON['prompt'],
+                correctBlocks: problemJSON['codeBlocks'],
+                scrambledBlocks: [...problemJSON['codeBlocks']].sort(() => Math.random() - 0.5)
+            }
+            } else {
+                continue;
+            }
         }
+
+        // If creating response fails
+        throw new Error('AI model unable to generate valid response please try again later');
     } catch (error) {
         // Pass error to createParsonProblem top level function
         throw error;
@@ -132,7 +141,7 @@ const cleanJSON = (jsonString) => {
 
     // Step 2: Ensure backslashes are properly escaped for Python compatibility
     // Double escape backslashes for JSON to ensure they're properly understood in Python
-    cleanedString = cleanedString.replace(/\\/g, '\\\\');
+    // cleanedString = cleanedString.replace(/\\/g, '\\\\');
 
     // Step 3: Parse the cleaned string into JSON
     let initJSON;
@@ -151,7 +160,7 @@ const cleanJSON = (jsonString) => {
                 }
                 return line.trim(); // Trim leading and trailing whitespace
             })
-            .filter(line => line !== '' && !line.startsWith('#')); // Remove empty lines and lines starting with '#'
+            .filter(line => line !== '' && (!line.startsWith('#') || !line.startsWith('/'))); // Remove empty lines and lines starting with '#'
     }
 
     return initJSON;
