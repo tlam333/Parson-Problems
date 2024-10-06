@@ -54,7 +54,7 @@ exports.createParsonProblem = async (req, res) => {
             problemId: newProblem._id,
             prompt: newProblem.prompt,
             scrambledBlocks: newProblem.scrambledBlocks,
-            correctBlocks: correctBlocks
+            correctBlocks: newProblem.correctBlocks
         });
 
     } catch (error) {

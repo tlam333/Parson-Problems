@@ -22,22 +22,27 @@ const NavHome = () => {
       // When submitted, ensure the user does not spam click the submit button
       setLoading(true)
 
-      const res = await fetch(urlregister, {
+      fetch(urlregister, {
         method: 'POST',
         code: 'cors',
         headers: {'content-type': 'application/json'},
         body: JSON.stringify({"userName": username, "password": password, "email": email})
+      }).then((result) => result.json())
+      .then((res)=>{
+        // successful responses trigger global context update
+        console.log(res)
+        if (res.status == 200){
+          dispatch({type: "REGISTER", payload: res.body})
+          console.log(res.body)
+          // update isLoading state
+          setLoading(false)
+          
+          // login success, trigger redirect
+          //navigate("/CategoriesPage", {replace : true})
+        }
       })
       
-      // successful responses trigger global context update
-      if (res.status == 200){
-        dispatch({type: "REGISTER", payload: res.body})
-        // update isLoading state
-        setLoading(false)
-        
-        // login success, trigger redirect
-        navigate("/CategoriesPage", {replace : true})
-      }
+
     }
 
     const loginSubmit = async () => {
