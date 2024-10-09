@@ -3,7 +3,9 @@ import ProfilePage from "./pages/profilePage.jsx";
 import CategoriesPage from "./pages/CategoriesPage.jsx";
 import Home from "./pages/Home.jsx"
 import WorkPage from "./pages/WorkPage.jsx"
-
+import {useContext} from 'react'
+import {AuthenticationContext} from "./contexts/AuthenticationContext.js"
+//import {AuthenticationContxt} from '../contexts/AuthenticationContext'
 import {
     createBrowserRouter,
     RouterProvider,
@@ -11,34 +13,51 @@ import {
     Link,
   } from "react-router-dom";
 
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <Home />
-    },
-    {
-        path: "/Home",
-        element: <Home />
-    },
-    {
-        path: "/SavedProblems",
-        element: <SavedProblems />
-    },
-    {
-        path: "/Profile",
-        element: <ProfilePage />
-    },
-    {   
-        path: "/CategoriesPage",
-        element: <CategoriesPage />
-    },
-    {
-        path: "/WorkPage",
-        element: <WorkPage />
-    }
-])
-// comment
+
 const App = () => {
+    const authContext = useContext(AuthenticationContext)
+    const {state, dispatch} = authContext
+    
+    
+    const isAuthenticated = () =>{
+
+    
+        if (state.user != null){
+            if (state.user == "AUTHENTICATED"){
+                return true
+            }
+        } else {
+            return false
+        }
+    }
+    
+    const router = createBrowserRouter([
+        {
+            path: "/",
+            element: <Home />
+        },
+        {
+            path: "/Home",
+            element: <Home />
+        },
+        {
+            path: "/SavedProblems",
+            element: <SavedProblems isAuthenticated={isAuthenticated()}/>
+        },
+        {
+            path: "/Profile",
+            element: <ProfilePage/>
+        },
+        {   
+            path: "/CategoriesPage",
+            element: <CategoriesPage />
+        },
+        {
+            path: "/WorkPage",
+            element: <WorkPage />
+        }
+    ])
+
     return (<RouterProvider router={router}/>)
 }
 

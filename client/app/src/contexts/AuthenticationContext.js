@@ -3,7 +3,6 @@ import { useReducer } from 'react';
 
 export const AuthenticationContext = createContext(null);
 export const AuthenticationReducer = (state, action) =>{
-    console.log(action)
     if (action.type == "REGISTER" || action.type == "LOGIN") {
         return {user: "AUTHENTICATED"}
     } else {

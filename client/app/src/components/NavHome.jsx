@@ -18,6 +18,12 @@ const NavHome = () => {
     let urlregister = "http://localhost:3001/api/auth/register"
     let urllogin = "http://localhost:3001/api/auth/login"
 
+    const isAuthenticated = () => {
+      if (state != null){
+        return true
+      } else return false
+    }
+    
     const registerSubmit = async () => {
       // When submitted, ensure the user does not spam click the submit button
       setLoading(true)
@@ -27,40 +33,46 @@ const NavHome = () => {
         code: 'cors',
         headers: {'content-type': 'application/json'},
         body: JSON.stringify({"userName": username, "password": password, "email": email})
-      }).then((result) => result.json())
-      .then((res)=>{
-        // successful responses trigger global context update
-        console.log(res)
-        if (res.status == 200){
-          dispatch({type: "REGISTER", payload: res.body})
-          console.log(res.body)
+      })
+      .then((result) => result.json())
+      .then((data) => {
+
+        if (data.message === `Account ${username} was created`){
+          dispatch({type: "REGISTER", payload: data.body})
           // update isLoading state
           setLoading(false)
           
           // login success, trigger redirect
-          //navigate("/CategoriesPage", {replace : true})
+          setTimeout(navigate("/CategoriesPage", {replace : true}, 2000))
         }
       })
-      
 
     }
 
     const loginSubmit = async () => {
+
+      // When submitted, ensure the user does not spam click the submit button
       setLoading(true)
 
-      const res = await fetch(urllogin, {
+      fetch(urllogin, {
         method: 'POST',
         code: 'cors',
-        headers: {'content-type': 'application/json',
-          body: JSON.stringify({"userName": username, "password": password})
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify({"userName": username, "password": password})
+      })
+      .then((result) => result.json())
+      .then((data) => {
+
+        if ((data.id).toString().length > 0){
+          dispatch({type: "LOGIN", payload: data.body})
+          // update isLoading state
+          setLoading(false)
+          
+          // login success, trigger redirect
+          setTimeout(navigate("/CategoriesPage", {replace : true}, 2000))
         }
       })
 
-      if (res.status == 200){
-        dispatch({type: "LOGIN", payload: res.body})
-        setLoading(false)
-        navigate("/CategoriesPage", {replace : true})
-      }
     }
 
     return (
@@ -82,12 +94,12 @@ const NavHome = () => {
               tabIndex={0}
               className="dropdown-content menu bg-black border border-orange-500 rounded-box w-52 p-2 shadow"
             >
-          <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/Profile'>Profile Analytics</Link></li>
+          {isAuthenticated() == true ?  <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/Profile'>Profile Analytics</Link></li>: <div></div>}
           <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/CategoriesPage'>Categories</Link></li>
           <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/WorkPage'>Workspace</Link></li>
-          <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/SavedProblems'>Saved Problems</Link></li>
-          <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#popup1">Login</a></li>
-          <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#popup2">Register</a></li>
+          {isAuthenticated() == true ? <li><Link className="text-orange-500 hover:bg-orange-500 hover:text-black" to='/SavedProblems'>Saved Problems</Link></li> : <div></div>}
+          {isAuthenticated() == false ? <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#popup1">Login</a></li> : <div></div>}
+          {isAuthenticated() == false ? <li><a className="text-orange-500 hover:bg-orange-500 hover:text-black" href="#popup2">Register</a></li> : <div></div>}
             </ul>
           </div>
 

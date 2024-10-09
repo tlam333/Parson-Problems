@@ -11,47 +11,107 @@ const WorkPage = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(true); // Add loading state
   const [promptObj, setPromptObj] = useState({})
-  const [promptData, setPromptData] = useState();
+  const [isCorrect, setCorrect] = useState()
+  const [errorMessage, setErrorMessage] = useState('')
 
   const generateProblem = () => {
     if (answerLines.length > 0 || lines.length > 0){
       updateAnswerLines([])
       updateLines([])
     }
+
     if (location.state != null){
       setLoading(true); // Set loading state to true when starting to fetch
       fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ topic: "Correlation", theme: "thomas" }),
+        method: 'POST',
+        code: 'cors',
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify({ topic: location.state.topic.toString(), theme: location.state.theme.toString()})
       })
-        .then((result) => result.json())
-        .then((data) => {
-          setPromptObj(data)
-          console.log(promptObj)
-          updateLines(data.scrambledBlocks);
-          setLoading(false); // Set loading state to false when data is fetched
-        })
-        .catch((err) => {
-          console.error(err);
-          setLoading(false); // Set loading state to false if there's an error
-        });
+      .then((result) => result.json())
+      .then((data) => {
+        setPromptObj(data);
+        updateLines(data.scrambledBlocks);
+        setLoading(false); // Set loading state to false when data is fetched
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false); // Set loading state to false if there's an error
+      });
     }
   };
 
   const handleSubmit = () => {
     // Submission logic
+    let submitUrl = `http://localhost:3001/api/parsonProblem/submit/${promptObj.problemId}`
+    
     console.log(promptObj)
-    if (promptObj.correctBlocks.toString() == answerLines.toString()) {
-      console.log("CORRECT")
-    } else {
-      console.log("fuckn wrong")
+
+    fetch(submitUrl, {
+      method: 'POST',   
+      code: 'cors',
+      headers: {'content-type': 'application/json'},
+      body: JSON.stringify({codeBlocks: answerLines})
+    }).then((res) => res.json())
+      .then((data) =>{
+        console.log(data)
+        if (data.passed == true){
+          setCorrect(true)
+          setErrorMessage('')
+          console.log("correct")
+        } else {
+          setCorrect(false)
+          setErrorMessage(data.terminalMessage.toString())
+          console.log("wrong")}
+      })
+
+    
+  };
+
+  const displayFeedback = () => {
+    return (
+      <div role="alert" className="alert alert-success">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 shrink-0 stroke-current"
+          fill="none"
+          viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Correct</span>
+      </div>
+    ) 
+  }
+
+  const displayError = (errorMessage) =>{
+    if (errorMessage.length > 0) {
+
+      return (
+        <div role="alert" className="alert alert-error">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 shrink-0 stroke-current"
+          fill="none"
+          viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{errorMessage}</span>
+      </div>
+      )} 
+    else {
+      return (<div></div>)
     }
 
-  };
+    
+  }
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
@@ -103,7 +163,7 @@ const WorkPage = () => {
   useEffect(() => {
     console.log(location.state)
     if (location.state != null){
-      setPromptData({ topic: location.state.topic, theme: location.state.subtopic });
+      //setPromptData({ topic: location.state.topic, theme: location.state.subtopic });
       generateProblem(); // Call generateProblem when component mounts
     } else {
       setLoading(false);
@@ -125,7 +185,7 @@ const WorkPage = () => {
         <>
           <div className="w-5/6 mx-auto">
             <h1 className="text-white text-2xl font-semibold">Prompt</h1>
-            <div className="w-full h-10" style={{ backgroundColor: "#2d2e2e" }}></div>
+            <div className="w-full h-20 overflow-auto" style={{ backgroundColor: "#2d2e2e" }}><p>{promptObj.prompt}</p></div>
           </div>
 
           <DragDropContext onDragEnd={onDragEnd}>
@@ -211,7 +271,9 @@ const WorkPage = () => {
                 <div
                   className="flex flex-col overflow-auto gap-2 w-full h-1/6 mb-1 p-4"
                   style={{ backgroundColor: "#2d2e2e" }}
-                ></div>
+                >
+                  {isCorrect ? displayFeedback() : displayError(errorMessage)}
+                </div>
               </div>
             </div>
           </DragDropContext>
