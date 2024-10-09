@@ -19,7 +19,8 @@ const NavHome = () => {
     let urllogin = "http://localhost:3001/api/auth/login"
 
     const isAuthenticated = () => {
-      if (state != null){
+      console.log(state.user)
+      if (state.user != null){
         return true
       } else return false
     }
