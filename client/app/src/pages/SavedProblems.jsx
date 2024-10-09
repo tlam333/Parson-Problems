@@ -52,17 +52,16 @@ const SavedProblems = ({isAuthenticated}) => {
                         solvedStatus: "Incomplete"},
                     ]
     const navigate = useNavigate()
-    console.log(isAuthenticated)
     
     useEffect((isAuthenticated) => {
-        if (isAuthenticated == false){
+        if (isAuthenticated == false || isAuthenticated == null){
             navigate("/", {replace : true}) 
         }
     }, [])
 
     return (
         <div>
-        {!isAuthenticated ?  null : (
+        {isAuthenticated == false ?  null : (
             
             <div className='h-lvh bg-black'>
         
