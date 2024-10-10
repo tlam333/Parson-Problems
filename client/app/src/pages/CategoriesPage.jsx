@@ -1,5 +1,5 @@
 import React from 'react';
-import NavMenu from '../components/NavMenu.jsx';
+import NavHome from '../components/NavHome.jsx';
 import Categories from '../components/Categories.jsx';
 
 const CategoriesBody = () => {
@@ -63,7 +63,7 @@ const categoriesData = [
 const CategoriesPage = () => {
     return (
         <>
-        <NavMenu/>
+        <NavHome/>
         <CategoriesBody/>
         <Categories categories={categoriesData}/>
         </>

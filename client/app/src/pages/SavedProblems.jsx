@@ -1,63 +1,82 @@
 // import '../styles/savedProblems.css';
 import { createElement } from 'react';
-import NavMenu from "../components/NavMenu";
+import NavHome from "../components/NavHome";
 import {useNavigate} from 'react-router-dom'
-import {useEffect} from 'react'
+import {useEffect, useContext, useState} from 'react'
+import {AuthenticationContext} from "../contexts/AuthenticationContext"
 
 // In future SavedProblems([categories])
 const SavedProblems = ({isAuthenticated}) => {
-    // let problems = fetchProblems();
-    // for now problems is what is expected as a return from FetchProblems()
-    let problems = [{   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Incomplete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Incomplete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Complete"},
-                    {   problemName: "Linear Regression", 
-                        problemCategory: "Regression", 
-                        solvedStatus: "Incomplete"},
-                    ]
+
+    // let problems = [{   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Complete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Complete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Incomplete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Complete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Complete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Complete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Complete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Complete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Complete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Incomplete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Complete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Complete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Complete"},
+    //                 {   problemName: "Linear Regression", 
+    //                     problemCategory: "Regression", 
+    //                     solvedStatus: "Incomplete"},
+    //                 ]
+    let [problems, setProblems] = useState([])
     const navigate = useNavigate()
+    const authenticationContext = useContext(AuthenticationContext)
+    const {state, dispatch} = authenticationContext
+    const pastProblemsUrl = `http://localhost:3001/api/parsonProblem/past/${state.payload}`
     
-    useEffect((isAuthenticated) => {
+
+    useEffect(() => {
         if (isAuthenticated == false || isAuthenticated == null){
             navigate("/", {replace : true}) 
-        }
+        } 
     }, [])
+
+    
+    fetch(pastProblemsUrl, {
+        method: 'GET',
+        code: 'cors',
+        headers: {'content-type': 'application/json'}
+      })
+      .then((result) => result.json())
+      .then((data) => {
+        if (data.pastProblems != null){
+            setProblems(data.pastProblems)
+        }
+        
+      })
 
     return (
         <div>
@@ -65,13 +84,13 @@ const SavedProblems = ({isAuthenticated}) => {
             
             <div className='h-lvh bg-black'>
         
-            <NavMenu />
+            <NavHome />
                     
             <h1 className="text-5xl font-bold text-white text-center mt-4">
                 Saved <span className="text-orange-500">Problems</span>
             </h1>
             <br />
-                <div className='overflow-y-auto border-orange-500 mt-10 border-2 w-5/6 h-4/6 bg-black m-auto flex flex-col'>
+                <div className='overflow-y-auto border-orange-500 mt-10 border-2 w-5/6 h-4/6 bg-black m-auto'>
                     <table className='table-auto h-auto w-full m-auto'>
                         <thead className='sticky top-0'>
                             <tr className='text-white'>

@@ -1,4 +1,3 @@
-import NavMenu from "../components/NavMenu"
 import NavHome from "../components/NavHome"
 import "../styles/homeNavigation.css"
 

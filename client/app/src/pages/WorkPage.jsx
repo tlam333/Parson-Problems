@@ -1,4 +1,4 @@
-import NavMenu from "../components/NavMenu";
+import NavHome from "../components/NavHome";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -45,8 +45,7 @@ const WorkPage = () => {
     // Submission logic
     let submitUrl = `http://localhost:3001/api/parsonProblem/submit/${promptObj.problemId}`
     
-    console.log(promptObj)
-
+    console.log(answerLines)
     fetch(submitUrl, {
       method: 'POST',   
       code: 'cors',
@@ -54,15 +53,15 @@ const WorkPage = () => {
       body: JSON.stringify({codeBlocks: answerLines})
     }).then((res) => res.json())
       .then((data) =>{
-        console.log(data)
+
         if (data.passed == true){
           setCorrect(true)
           setErrorMessage('')
-          console.log("correct")
+
         } else {
           setCorrect(false)
           setErrorMessage(data.terminalMessage.toString())
-          console.log("wrong")}
+        }
       })
 
     
@@ -161,7 +160,6 @@ const WorkPage = () => {
   };
 
   useEffect(() => {
-    console.log(location.state)
     if (location.state != null){
       //setPromptData({ topic: location.state.topic, theme: location.state.subtopic });
       generateProblem(); // Call generateProblem when component mounts
@@ -173,7 +171,7 @@ const WorkPage = () => {
 
   return (
     <div className="overflow-scroll bg-black h-lvh">
-      <NavMenu />
+      <NavHome />
 
       {/* Display loading animation while loading */}
       {loading ? (
