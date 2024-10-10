@@ -23,6 +23,18 @@ const parsonProblemSchema = new Schema({
         type: [String],
         required: true
     }, // Array of strings for the scrambled code lines
+    numAttempts: {
+        type: Number,
+        default: 0
+    },
+    totalTime: {
+        type: Number,   // Time spent in miliseconds
+        default: 0
+    },
+    correct: {
+        type: Boolean,
+        default: false
+    },
     userOwner: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
