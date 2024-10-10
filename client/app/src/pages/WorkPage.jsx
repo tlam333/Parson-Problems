@@ -1,183 +1,284 @@
-import NavMenu from "../components/NavMenu"
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-import { useCallback } from "react"
-import CodeBlock from '../components/CodeBlock.jsx'
-import {useState} from 'react'
+import NavHome from "../components/NavHome";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import CodeBlock from "../components/CodeBlock.jsx";
 
 const WorkPage = () => {
-    // What I expect to recieve from the API call a problem, with its content
-    const problemObject = {id: 'problem-1', content: 
-            ['Test line 1', 'Test line 2', 'Test line 3',
-             'Test line 4', 'Test line 5', 'Test line 6',
-             'Test line 7', 'Test line 8', 'Test line 9',
-             'Test line 10', 'Test line 11', 'Test line 12',
-             'Test line 13', 'Test line 14', 'Test line 15',
-             'Test line 16', 'Test line 17', 'Test line 18',
-            ]}
+  let url = "http://localhost:3001/api/parsonProblem/";
+  let [lines, updateLines] = useState([]);
+  let [answerLines, updateAnswerLines] = useState([]);
+  const location = useLocation();
+  const [loading, setLoading] = useState(true); // Add loading state
+  const [promptObj, setPromptObj] = useState({})
+  const [isCorrect, setCorrect] = useState()
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const generateProblem = () => {
+    if (answerLines.length > 0 || lines.length > 0){
+      updateAnswerLines([])
+      updateLines([])
+    }
+
+    if (location.state != null){
+      setLoading(true); // Set loading state to true when starting to fetch
+      fetch(url, {
+        method: 'POST',
+        code: 'cors',
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify({ topic: location.state.topic.toString(), theme: location.state.theme.toString()})
+      })
+      .then((result) => result.json())
+      .then((data) => {
+        setPromptObj(data);
+        updateLines(data.scrambledBlocks);
+        setLoading(false); // Set loading state to false when data is fetched
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false); // Set loading state to false if there's an error
+      });
+    }
+  };
+
+  const handleSubmit = () => {
+    // Submission logic
+    let submitUrl = `http://localhost:3001/api/parsonProblem/submit/${promptObj.problemId}`
     
-    // track line order states to ensure that component re-renders for each dnd
-    let [lines, updateLines] = useState(problemObject.content);
-    let [answerLines, updateAnswerLines] = useState([]);
+    console.log(answerLines)
+    fetch(submitUrl, {
+      method: 'POST',   
+      code: 'cors',
+      headers: {'content-type': 'application/json'},
+      body: JSON.stringify({codeBlocks: answerLines})
+    }).then((res) => res.json())
+      .then((data) =>{
 
-    // Responders for DragContext state updates
-    // Only on drag end is actually a required responder/hook
-    const onDragEnd = (result) => {
+        if (data.passed == true){
+          setCorrect(true)
+          setErrorMessage('')
 
-        const {source, destination} = result
-        if (destination != null){
-            updateArrays(source, destination)
         } else {
-            return
+          setCorrect(false)
+          setErrorMessage(data.terminalMessage.toString())
         }
-        
+      })
 
-    }
+    
+  };
 
-    const updateArrays = (source, destination) => {
-        let sourceItems, destinationItems;
-
-        if (source.droppableId != destination.droppableId) {
-            if (destination.droppableId == 'workspace-1') {
-                sourceItems = answerLines;
-                destinationItems = lines;
-
-                let [item] = sourceItems.splice(source.index, 1)
-                destinationItems.splice(destination.index, 0, item)
-                updateLines(destinationItems)
-                updateAnswerLines(sourceItems)
-
-            } else if (destination.droppableId == 'workspace-2'){
-                sourceItems = lines;
-                destinationItems = answerLines;
-
-                let [item] = sourceItems.splice(source.index, 1)
-                destinationItems.splice(destination.index, 0, item)
-                updateLines(sourceItems)
-                updateAnswerLines(destinationItems)
-                console.log("answer", answerLines)
-
-            }
-        } else {
-            if (source.droppableId == 'workspace-1') {
-                sourceItems = lines
-
-                let [item] = lines.splice(source.index, 1)
-
-                sourceItems.splice(destination.index, 0, item)
-                updateLines(sourceItems)
-                
-            } else if (source.droppableId == 'workspace-2'){
-                sourceItems = answerLines
-
-                let [item] = sourceItems.splice(source.index, 1)
-                sourceItems.splice(destination.index, 0, item)
-                updateAnswerLines(sourceItems)
-            }
-        }
-    }
-
+  const displayFeedback = () => {
     return (
-        <div className="overflow-scroll bg-black h-lvh">
-            <NavMenu />
-            <div className="mt-4 w-5/6 mx-auto">
-                <button className="display-block mb-2.5 text-black bg-orange-500 w-1/9 h-1/3 border-r-4 border-black font-bold p-2">Description</button>
-                <button className="display-block mb-2.5 text-black bg-orange-500 w-1/9 h-1/3 border-r-4 border-black font-bold p-2">Hints</button>
-                <button className="display-block mb-2.5 text-black bg-orange-500 w-1/9 h-1/3 border-r-4 border-black font-bold p-2">Prompt</button>
-                <div className="w-full h-10 bg-slate-800"></div>
-            </div>
+      <div role="alert" className="alert alert-success">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 shrink-0 stroke-current"
+          fill="none"
+          viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Correct</span>
+      </div>
+    ) 
+  }
 
-            {/* The interactive section of the workspace page. */}
-            <DragDropContext 
-                onDragEnd = {onDragEnd}
-            >
+  const displayError = (errorMessage) =>{
+    if (errorMessage.length > 0) {
 
-            <div className="h-full w-full mt-10 p-10 flex  bg-black
-            flex-col items-center space-between md:flex-row justify-between gap-12">
-                <div className="flex-wrap bg-black w-full h-full rounded-md md:w-2/5">
-                    <button className="display-block mb-1.5 mr-1 text-black 
-                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Question</button>
+      return (
+        <div role="alert" className="alert alert-error">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 shrink-0 stroke-current"
+          fill="none"
+          viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{errorMessage}</span>
+      </div>
+      )} 
+    else {
+      return (<div></div>)
+    }
 
-                    <button className="display-block mb-2.5 text-black 
-                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Regenerate</button>
+    
+  }
 
-                    <Droppable droppableId="workspace-1">
-                        {(provided, snapshot) => 
-                                (<div className="flex flex-col overflow-auto gap-2 border-orange-500 border-2 w-full h-5/6 bg-black rounded-md mb-1"
-                                    ref = {provided.innerRef}
-                                    {...provided.droppableProps}
-                                >
-                                        {
-                                            lines.map((line, index) => (
-                                                
-                                                    <Draggable draggableId={line} index={index} key={line}>
-                                                        {(provided, snapshot) => (
-                                                            <div 
-                                                                ref={provided.innerRef}
-                                                                {...provided.draggableProps}
-                                                                {...provided.dragHandleProps}>
-            
-                                                                <CodeBlock item={line}/>
-                                                            </div>
-                                                        )}
-                                                        
-                                                    </Draggable>
-                                                
-                                            ))
-                                        }
-                                {provided.placeholder}
-                                </div>                       
-                        )}
-                    
-                    </Droppable>
+  const onDragEnd = (result) => {
+    const { source, destination } = result;
+    if (destination != null) {
+      updateArrays(source, destination);
+    } else {
+      return;
+    }
+  };
 
-                </div>
+  const updateArrays = (source, destination) => {
+    let sourceItems, destinationItems;
 
+    if (source.droppableId !== destination.droppableId) {
+      if (destination.droppableId === "workspace-1") {
+        sourceItems = answerLines;
+        destinationItems = lines;
 
-                <div className="flex-wrap bg-black w-full h-full rounded-md md:w-2/5">
-                    <button className="display-block mb-1.5 mr-1 text-black 
-                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Answer</button>
-                    <button className="display-block mb-1.5 mr-1 text-black 
-                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Solutions</button>
-                    <button className="display-block mb-2.5 text-black 
-                    bg-orange-500 w-1/9 rounded-md font-bold p-2">Submit</button>
+        let [item] = sourceItems.splice(source.index, 1);
+        destinationItems.splice(destination.index, 0, item);
+        updateLines(destinationItems);
+        updateAnswerLines(sourceItems);
+      } else if (destination.droppableId === "workspace-2") {
+        sourceItems = lines;
+        destinationItems = answerLines;
 
-                    <Droppable droppableId="workspace-2">
-                        {(provided, snapshot) => 
-                                (<div className="flex flex-col overflow-auto gap-2 border-orange-500 border-2 w-full h-5/6 bg-black rounded-md mb-1"
-                                    ref = {provided.innerRef}
-                                    {...provided.droppableProps}
-                                >
-                                        {
-                                            answerLines.map((line, index) => (
-                                                
-                                                    <Draggable draggableId={line} index={index} key={line}>
-                                                        {(provided, snapshot) => (
-                                                            <div 
-                                                                ref={provided.innerRef}
-                                                                {...provided.draggableProps}
-                                                                {...provided.dragHandleProps}>
-            
-                                                                <CodeBlock item={line}/>
-                                                            </div>
-                                                        )}
-                                                        
-                                                    </Draggable>
-                                                
-                                            ))
-                                        }
-                                {provided.placeholder}
-                                </div>)                 
-                        }
-                    
-                    </Droppable>
+        let [item] = sourceItems.splice(source.index, 1);
+        destinationItems.splice(destination.index, 0, item);
+        updateLines(sourceItems);
+        updateAnswerLines(destinationItems);
+      }
+    } else {
+      if (source.droppableId === "workspace-1") {
+        sourceItems = lines;
 
+        let [item] = lines.splice(source.index, 1);
+        sourceItems.splice(destination.index, 0, item);
+        updateLines(sourceItems);
+      } else if (source.droppableId === "workspace-2") {
+        sourceItems = answerLines;
 
-                </div>
-            </div>
-            </DragDropContext>
+        let [item] = sourceItems.splice(source.index, 1);
+        sourceItems.splice(destination.index, 0, item);
+        updateAnswerLines(sourceItems);
+      }
+    }
+  };
 
+  useEffect(() => {
+    if (location.state != null){
+      //setPromptData({ topic: location.state.topic, theme: location.state.subtopic });
+      generateProblem(); // Call generateProblem when component mounts
+    } else {
+      setLoading(false);
+    }
+    
+  }, []);
+
+  return (
+    <div className="overflow-scroll bg-black h-lvh">
+      <NavHome />
+
+      {/* Display loading animation while loading */}
+      {loading ? (
+        <div className="flex justify-center items-center h-full">
+          <span className="loading loading-bars loading-lg"></span>
         </div>
-    )
-}
+      ) : (
+        // Render this only when not loading
+        <>
+          <div className="w-5/6 mx-auto">
+            <h1 className="text-white text-2xl font-semibold">Prompt</h1>
+            <div className="w-full h-20 overflow-auto" style={{ backgroundColor: "#2d2e2e" }}><p>{promptObj.prompt}</p></div>
+          </div>
 
-export default WorkPage
+          <DragDropContext onDragEnd={onDragEnd}>
+            <div className="h-full w-full p-10 flex bg-black flex-col items-center space-between md:flex-row justify-between">
+              <div className="flex-wrap bg-black w-full h-full rounded-md md:w-1/2">
+                <h1 className="text-white text-2xl font-semibold">Select</h1>
+
+                <Droppable droppableId="workspace-1">
+                  {(provided, snapshot) => (
+                    <div
+                      className="flex flex-col overflow-auto gap-2 w-full h-5/6 mb-1 p-4"
+                      ref={provided.innerRef}
+                      style={{ backgroundColor: "#2d2e2e" }}
+                      {...provided.droppableProps}
+                    >
+                      {lines.map((line, index) => (
+                        <Draggable draggableId={line} index={index} key={line}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <CodeBlock item={line} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+
+                <br />
+                <div className="flex justify-between w-full">
+                  <button
+                    onClick={generateProblem}
+                    className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded"
+                  >
+                    Regenerate
+                  </button>
+                  <button
+                    onClick={handleSubmit}
+                    className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex-wrap bg-black w-full h-full md:w-2/5">
+                <h1 className="text-white text-2xl font-semibold">
+                  Drag & Drop here
+                </h1>
+
+                <Droppable droppableId="workspace-2">
+                  {(provided, snapshot) => (
+                    <div
+                      className="flex flex-col overflow-auto gap-2 w-full h-5/6 bg-black mb-1 p-4"
+                      style={{ backgroundColor: "#2d2e2e" }}
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                    >
+                      {answerLines.map((line, index) => (
+                        <Draggable draggableId={line} index={index} key={line}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <CodeBlock item={line} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+                <br />
+                <h1 className="text-white text-2xl font-semibold">Feedback</h1>
+                <div
+                  className="flex flex-col overflow-auto gap-2 w-full h-1/6 mb-1 p-4"
+                  style={{ backgroundColor: "#2d2e2e" }}
+                >
+                  {isCorrect ? displayFeedback() : displayError(errorMessage)}
+                </div>
+              </div>
+            </div>
+          </DragDropContext>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default WorkPage;
