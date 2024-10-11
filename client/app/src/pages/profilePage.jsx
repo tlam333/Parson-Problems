@@ -1,12 +1,31 @@
-import React, { useState, useContext} from "react";
-import NavMenu from "../components/NavMenu"
+import React, { useEffect, useState, useContext} from "react";
+import NavHome from "../components/NavHome";
 import {AuthenticationContext} from "../contexts/AuthenticationContext.js"
 
 const ProfileBody = () => {
   // State to manage the input value
+  let [stats, setstats] = useState([])
   const [username, setUsername] = useState("username");
   const authenticationContext = useContext(AuthenticationContext)
   const {state, dispatch} = authenticationContext // state object has two things {user: "AUTHENTICATED" or null, payload: "the user's id is here"}
+  
+  const statsUrl = `http://localhost:3001/api/users/${state.payload}`
+
+  useEffect(() => {
+    fetch(statsUrl, {
+      method: 'GET',
+      code: 'cors',
+      headers: {'content-type': 'application/json'}
+    })
+    .then((result) => result.json())
+    .then((data) => {
+      if (data != null){
+          setstats(data)
+          console.log(data)   
+      }
+    })
+  }, [])
+
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center  text-center font-sans">
@@ -62,7 +81,7 @@ const ProfileBody = () => {
 const ProfilePage = () => {
   return (
     <>
-      <NavMenu />
+      <NavHome />
       <ProfileBody />
     </>
   );

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 exports.getUser = async (req, res) => {
     try {
-        if (req.login) {
+        if (req.sub) {
             const user = await User.findById(req.sub);
 
             const profileInfo = {
