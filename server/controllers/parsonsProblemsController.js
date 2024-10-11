@@ -37,7 +37,8 @@ exports.getPastProblems = async (req, res) => {
         }
 
         // Send the past problems in the response
-        res.status(200).json(user.pastProblems);
+        // user.pastProblems.forEach((problemID) => {})
+        res.status(200).json(user.pastProblems); // returns array of problem IDs
     } catch (error) {
         // Handle errors
         res.status(500).json({ error: error.message });
@@ -47,17 +48,19 @@ exports.getPastProblems = async (req, res) => {
 exports.createParsonProblem = async (req, res) => {
     try {
         // Extract information to create the Parson Problem
-        const { topic, theme } = req.body;
+        const { topic, theme, login, sub} = req.body;
 
         const { prompt, correctBlocks, scrambledBlocks } = await geminiInterface.generateProblemViaGemini(topic, theme); 
 
         let newProblem = null; // Declare newProblem once
 
         // Check if the user is logged in
-        if (req.login) {
+        if (login != "null") {
+            console.log("REQ LOGIN  *****   " + login)
+            console.log("REQ ID ****** " + sub)
             // Create problem with reference to the logged-in user
             newProblem = new ParsonProblem({
-                userOwner: req.sub, // Assuming req.sub contains the user ID
+                userOwner: sub, // Assuming req.sub contains the user ID
                 prompt: prompt,
                 topic: topic,
                 theme: theme,
@@ -69,7 +72,7 @@ exports.createParsonProblem = async (req, res) => {
             await newProblem.save(); // Ensure save completes before proceeding
 
             // Find the user and add the new problem to their past problems
-            const user = await User.findById(req.sub);
+            const user = await User.findById(sub);
             if (user) {
                 user.pastProblems.push(newProblem._id);
                 await user.save(); // Ensure the user's document is updated

@@ -72,7 +72,7 @@ exports.generateProblemViaGemini = async (topic, theme) => {
 
     try {
 
-        for (let attempt = 1; attempt <=3; attempt++) {
+        for (let attempt = 1; attempt <=30; attempt++) {
             // Retrieves the gemini-pro model
             const model = genAI.getGenerativeModel({ model: "gemini-pro"});
 
