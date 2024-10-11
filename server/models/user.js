@@ -16,7 +16,7 @@ const userStatsSchema = new Schema({
         default: 0
     },
     timeSpent: {
-        type: Number,
+        type: Number, // Stored in miliseconds
         default: 0
     }
 });
