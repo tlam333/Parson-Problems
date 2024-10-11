@@ -119,12 +119,16 @@ exports.submitSolution = async (req, res) => {
             return res.status(404).send({ error: 'Problem not found' });
         }
 
+        problem.numAttempts++;
+        problem.totalTime += 15; /* The number in miliseconds of the latest attempt*/
+
 
         const result = await pythonInterface(joinCodeLines(codeBlocks));
 
         // Correct
         if (result.passed) {
-            const updatedUser = await User.findByIdAndUpdate(
+            problem.correct = true;
+            await User.findByIdAndUpdate(
                 req.sub,
                 { 
                     $inc: 
@@ -140,7 +144,7 @@ exports.submitSolution = async (req, res) => {
                 }
             );
         } else {
-            const updatedUser = await User.findByIdAndUpdate(
+            await User.findByIdAndUpdate(
                 req.sub,
                 { 
                     $inc: 

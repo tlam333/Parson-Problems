@@ -14,7 +14,8 @@ const ProfileBody = () => {
   useEffect(() => {
     fetch(statsUrl, {
       method: 'GET',
-      code: 'cors',
+      // code: 'cors',
+      credentials: 'include',
       headers: {'content-type': 'application/json'}
     })
     .then((result) => result.json())

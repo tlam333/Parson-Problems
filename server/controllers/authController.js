@@ -42,17 +42,19 @@ exports.login = async (req, res) => {
             await user.save();
 
             res.cookie('access_token', accessToken, {
-                httpOnly: true,
+                // httpOnly: true,
                 /* secure: process.env.NODE_ENV === 'production' */
-                sameSite: 'Lax',    // To prevent CSRF (Cross Site Reqest Forgery)
-                maxAge: 1 * 60 * 1000 // 1 mins
+                sameSite: 'None',    // To prevent CSRF (Cross Site Reqest Forgery)
+                maxAge: 1 * 60 * 1000, // 1 mins
+                // secure: true
             });
 
             res.cookie('refresh_token', refreshToken, {
-                httpOnly: true,
+                // httpOnly: true,
                 /* secure: process.env.NODE_ENV === 'production' */
-                sameSite: 'Lax',    // To prevent CSRF (Cross Site Reqest Forgery)
-                maxAge: 7 * 24 * 60 * 60 * 1000     // 7 Days
+                sameSite: 'None',    // To prevent CSRF (Cross Site Reqest Forgery)
+                maxAge: 7 * 24 * 60 * 60 * 1000,     // 7 Days
+                // secure: true,
             })
 
             return res.status(200).send(
@@ -127,8 +129,8 @@ exports.logout = async (req, res) => {
         );
 
         // Clear cookies (remove tokens from the client)
-        res.clearCookie('access_token', { httpOnly: true, sameSite: 'Lax' });
-        res.clearCookie('refresh_token', { httpOnly: true, sameSite: 'Lax' });
+        res.clearCookie('access_token', {sameSite: 'None' });
+        res.clearCookie('refresh_token', {sameSite: 'None' });
 
         res.status(200).json({ message: "Logout successful" });
     } catch (error) {
