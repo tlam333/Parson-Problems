@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext} from "react";
 import NavMenu from "../components/NavMenu"
+import {AuthenticationContext} from "../contexts/AuthenticationContext.js"
 
 const ProfileBody = () => {
   // State to manage the input value
   const [username, setUsername] = useState("username");
+  const authenticationContext = useContext(AuthenticationContext)
+  const {state, dispatch} = authenticationContext // state object has two things {user: "AUTHENTICATED" or null, payload: "the user's id is here"}
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center  text-center font-sans">

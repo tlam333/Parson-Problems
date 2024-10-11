@@ -94,7 +94,7 @@ exports.createParsonProblem = async (req, res) => {
 
         // Respond with the scrambled code to the frontend
         res.status(200).send({
-            problemId: newProblem._id,
+            _id: newProblem._id,
             prompt: newProblem.prompt,
             scrambledBlocks: newProblem.scrambledBlocks,
             correctBlocks: newProblem.correctBlocks

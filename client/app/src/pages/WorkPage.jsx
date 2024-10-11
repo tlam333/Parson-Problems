@@ -82,7 +82,8 @@ const WorkPage = () => {
 
   const handleSubmit = () => {
     // Submission logic
-    let submitUrl = `http://localhost:3001/api/parsonProblem/submit/${promptObj.problemId}`
+    console.log(promptObj)
+    let submitUrl = `http://localhost:3001/api/parsonProblem/submit/${promptObj._id}`
     
     console.log(answerLines)
     fetch(submitUrl, {
