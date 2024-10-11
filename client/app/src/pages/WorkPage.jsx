@@ -1,8 +1,9 @@
 import NavHome from "../components/NavHome";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext} from "react";
 import { useLocation } from "react-router-dom";
 import CodeBlock from "../components/CodeBlock.jsx";
+import {AuthenticationContext} from "../contexts/AuthenticationContext.js"
 
 const WorkPage = () => {
   let url = "http://localhost:3001/api/parsonProblem/";
@@ -13,6 +14,7 @@ const WorkPage = () => {
   const [promptObj, setPromptObj] = useState({})
   const [isCorrect, setCorrect] = useState()
   const [errorMessage, setErrorMessage] = useState('')
+  const {state, dispatch} = useContext(AuthenticationContext)
 
   const generateProblem = () => {
     if (answerLines.length > 0 || lines.length > 0){
@@ -20,13 +22,22 @@ const WorkPage = () => {
       updateLines([])
     }
 
+    
+    let login = state.user
+    let id = state.payload
+    if (login == null || id == null){
+      login = "null"
+      id = "null"
+    }
+
     if (location.state != null){
+      console.log(state.payload)
       setLoading(true); // Set loading state to true when starting to fetch
       fetch(url, {
         method: 'POST',
         code: 'cors',
         headers: {'content-type': 'application/json'},
-        body: JSON.stringify({ topic: location.state.topic.toString(), theme: location.state.theme.toString()})
+        body: JSON.stringify({ topic: location.state.topic.toString(), theme: location.state.theme.toString(), login: login.toString(), sub: id.toString()})
       })
       .then((result) => result.json())
       .then((data) => {

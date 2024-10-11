@@ -75,8 +75,12 @@ const SavedProblems = ({isAuthenticated}) => {
         if (data.pastProblems != null){
             setProblems(data.pastProblems)
         }
+
+        console.log(problems)
         
       })
+
+    
 
     return (
         <div>
@@ -94,10 +98,10 @@ const SavedProblems = ({isAuthenticated}) => {
                     <table className='table-auto h-auto w-full m-auto'>
                         <thead className='sticky top-0'>
                             <tr className='text-white'>
-                                <td className='p-3 bg-orange-500'>Mark As Complete</td>
+                                {/* <td className='p-3 bg-orange-500'>Mark As Complete</td> */}
                                 <td className='p-3 bg-orange-500'>Problem</td>
                                 <td className='p-3 bg-orange-500'>Category</td>
-                                <td className='p-3 bg-orange-500'>Status</td>
+                                {/* <td className='p-3 bg-orange-500'>Status</td> */}
                             </tr>
                         </thead>
             
