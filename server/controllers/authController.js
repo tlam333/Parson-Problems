@@ -96,7 +96,8 @@ exports.register = async (req, res) => {
 
         return res.status(200).send(
             {
-                "message": `Account ${newUser.userName} was created`
+                "message": `Account ${newUser.userName} was created`,
+                "id": newUser._id
             }
         );
     } catch (error) {
