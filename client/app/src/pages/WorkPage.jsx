@@ -15,6 +15,34 @@ const WorkPage = () => {
   const [isCorrect, setCorrect] = useState()
   const [errorMessage, setErrorMessage] = useState('')
   const {state, dispatch} = useContext(AuthenticationContext)
+  
+
+  const getPastProblem = () => {
+    if (answerLines.length > 0 || lines.length > 0){
+      updateAnswerLines([])
+      updateLines([])
+    }
+
+    if (location.state != null){
+      console.log(state.payload)
+      setLoading(true); // Set loading state to true when starting to fetch
+      fetch(`http://localhost:3001/api/parsonProblem/${location.state.problem_id}`, {
+        method: 'GET',
+        code: 'cors',
+        headers: {'content-type': 'application/json'},
+      })
+      .then((result) => result.json())
+      .then((data) => {
+        setPromptObj(data);
+        updateLines(data.scrambledBlocks);
+        setLoading(false); // Set loading state to false when data is fetched
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false); // Set loading state to false if there's an error
+      });
+    }
+  }
 
   const generateProblem = () => {
     if (answerLines.length > 0 || lines.length > 0){
@@ -171,7 +199,10 @@ const WorkPage = () => {
   };
 
   useEffect(() => {
-    if (location.state != null){
+    if (location.state.problem_id != null){
+      console.log(location.state.problem_id)
+      getPastProblem();
+    } else if (location.state != null){
       //setPromptData({ topic: location.state.topic, theme: location.state.subtopic });
       generateProblem(); // Call generateProblem when component mounts
     } else {

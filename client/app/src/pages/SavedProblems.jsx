@@ -4,6 +4,7 @@ import NavHome from "../components/NavHome";
 import {useNavigate} from 'react-router-dom'
 import {useEffect, useContext, useState} from 'react'
 import {AuthenticationContext} from "../contexts/AuthenticationContext"
+import {Link} from 'react-router-dom';
 
 // In future SavedProblems([categories])
 const SavedProblems = ({isAuthenticated}) => {
@@ -72,12 +73,9 @@ const SavedProblems = ({isAuthenticated}) => {
       })
       .then((result) => result.json())
       .then((data) => {
-        if (data.pastProblems != null){
-            setProblems(data.pastProblems)
+        if (data != null){
+            setProblems(data)
         }
-
-        console.log(problems)
-        
       })
 
     
@@ -108,12 +106,20 @@ const SavedProblems = ({isAuthenticated}) => {
                         <tbody className="bg-black h-auto">
                             {problems.map((item, index) => (
                                 <tr key={index} className='hover:bg-slate-900 text-white'>
-                                    <td className='p-3 text-sm border-b-orange-500 border-b-2'><input type='checkbox'></input></td>
-                                    <td className='p-3 text-sm border-b-orange-500 border-b-2 font-bold hover:text-orange-500'><button className="underline" href="/">{item.problemName}</button></td>
-                                    <td className='p-3 text-sm border-b-orange-500 border-b-2'>{item.problemCategory}</td>
-                                    <td className='p-3 text-sm border-b-orange-500 border-b-2'>
-                                        <span className={`rounded-lg text-white p-2 ${item.solvedStatus === 'Complete' ? 'bg-green-300' : 'bg-red-300'}`}>{item.solvedStatus}</span>
+                                    {/* <td className='p-3 text-sm border-b-orange-500 border-b-2'><input type='checkbox'></input></td> */}
+                                    <td className='p-3 text-sm border-b-orange-500 border-b-2 font-bold hover:text-orange-500'>
+                                        
+
+                                        <Link className="underline" to ="/WorkPage"
+                                            state = {{topic : item.topic, theme: item.theme, problem_id: item._id}}
+                                        >
+                                        {item.topic}
+                                        </Link>
                                     </td>
+                                    <td className='p-3 text-sm border-b-orange-500 border-b-2'>{item.theme}</td>
+                                    {/* <td className='p-3 text-sm border-b-orange-500 border-b-2'>
+                                        <span className={`rounded-lg text-white p-2 ${item.solvedStatus === 'Complete' ? 'bg-green-300' : 'bg-red-300'}`}>{item.solvedStatus}</span>
+                                    </td> */}
                                 </tr>
                             ))}
                         </tbody>
