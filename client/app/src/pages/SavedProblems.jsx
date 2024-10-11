@@ -62,21 +62,24 @@ const SavedProblems = ({isAuthenticated}) => {
     useEffect(() => {
         if (isAuthenticated == false || isAuthenticated == null){
             navigate("/", {replace : true}) 
-        } 
+        } else {
+            fetch(pastProblemsUrl, {
+                method: 'GET',
+                code: 'cors',
+                headers: {'content-type': 'application/json'}
+              })
+              .then((result) => result.json())
+              .then((data) => {
+                if (data != null){
+                    setProblems(data)
+                    
+                }
+              })
+        }
     }, [])
 
     
-    fetch(pastProblemsUrl, {
-        method: 'GET',
-        code: 'cors',
-        headers: {'content-type': 'application/json'}
-      })
-      .then((result) => result.json())
-      .then((data) => {
-        if (data != null){
-            setProblems(data)
-        }
-      })
+
 
     
 
@@ -104,7 +107,7 @@ const SavedProblems = ({isAuthenticated}) => {
                         </thead>
             
                         <tbody className="bg-black h-auto">
-                            {problems.map((item, index) => (
+                            {problems.length > 0 ? problems.map((item, index) => (
                                 <tr key={index} className='hover:bg-slate-900 text-white'>
                                     {/* <td className='p-3 text-sm border-b-orange-500 border-b-2'><input type='checkbox'></input></td> */}
                                     <td className='p-3 text-sm border-b-orange-500 border-b-2 font-bold hover:text-orange-500'>
@@ -121,7 +124,9 @@ const SavedProblems = ({isAuthenticated}) => {
                                         <span className={`rounded-lg text-white p-2 ${item.solvedStatus === 'Complete' ? 'bg-green-300' : 'bg-red-300'}`}>{item.solvedStatus}</span>
                                     </td> */}
                                 </tr>
-                            ))}
+                            )): 
+                                <div></div>
+                            }
                         </tbody>
                     </table>
                 </div>
