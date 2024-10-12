@@ -3,108 +3,132 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useState, useEffect, useContext} from "react";
 import { useLocation } from "react-router-dom";
 import CodeBlock from "../components/CodeBlock.jsx";
-import {AuthenticationContext} from "../contexts/AuthenticationContext.js"
+import {AuthenticationContext} from "../contexts/AuthenticationContext.js";
+import axios from 'axios';
 
 const WorkPage = () => {
   let url = "http://localhost:3001/api/parsonProblem/";
   let [lines, updateLines] = useState([]);
   let [answerLines, updateAnswerLines] = useState([]);
   const location = useLocation();
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [promptObj, setPromptObj] = useState({})
-  const [isCorrect, setCorrect] = useState()
-  const [errorMessage, setErrorMessage] = useState('')
-  const {state, dispatch} = useContext(AuthenticationContext)
+  const [loading, setLoading] = useState(true);
+  const [promptObj, setPromptObj] = useState({});
+  const [isCorrect, setCorrect] = useState();
+  const [errorMessage, setErrorMessage] = useState('');
+  const { state, dispatch } = useContext(AuthenticationContext);
+  
+  // New state for timing
+  const [elapsedTime, setElapsedTime] = useState(0); // Timer in seconds
+  const [timerInterval, setTimerInterval] = useState(null); // Timer interval ID
   
 
-  const getPastProblem = () => {
-    if (answerLines.length > 0 || lines.length > 0){
-      updateAnswerLines([])
-      updateLines([])
+  const getPastProblem = async () => {
+    if (answerLines.length > 0 || lines.length > 0) {
+      updateAnswerLines([]);
+      updateLines([]);
     }
 
-    if (location.state != null){
-      console.log(state.payload)
-      setLoading(true); // Set loading state to true when starting to fetch
-      fetch(`http://localhost:3001/api/parsonProblem/${location.state.problem_id}`, {
-        method: 'GET',
-        code: 'cors',
-        headers: {'content-type': 'application/json'},
-      })
-      .then((result) => result.json())
-      .then((data) => {
+    if (location.state != null) {
+      console.log(state.payload);
+      setLoading(true);
+      
+      try {
+        const response = await axios.get(`${url}${location.state.problem_id}`, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        });
+
+        const data = response.data;
         setPromptObj(data);
         updateLines(data.scrambledBlocks);
-        setLoading(false); // Set loading state to false when data is fetched
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false); // Set loading state to false if there's an error
-      });
-    }
-  }
-
-  const generateProblem = () => {
-    if (answerLines.length > 0 || lines.length > 0){
-      updateAnswerLines([])
-      updateLines([])
-    }
-
-    
-    let login = state.user
-    let id = state.payload
-    if (login == null || id == null){
-      login = "null"
-      id = "null"
-    }
-
-    if (location.state != null){
-      console.log(state.payload)
-      setLoading(true); // Set loading state to true when starting to fetch
-      fetch(url, {
-        method: 'POST',
-        code: 'cors',
-        headers: {'content-type': 'application/json'},
-        body: JSON.stringify({ topic: location.state.topic.toString(), theme: location.state.theme.toString(), login: login.toString(), sub: id.toString()})
-      })
-      .then((result) => result.json())
-      .then((data) => {
-        setPromptObj(data);
-        updateLines(data.scrambledBlocks);
-        setLoading(false); // Set loading state to false when data is fetched
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false); // Set loading state to false if there's an error
-      });
+      } catch (err) {
+        console.error('Error fetching past problem:', err);
+      } finally {
+        setLoading(false);
+        startTimer(); // Start timer when loading finishes
+      }
     }
   };
 
-  const handleSubmit = () => {
-    // Submission logic
-    console.log(promptObj)
-    let submitUrl = `http://localhost:3001/api/parsonProblem/submit/${promptObj._id}`
-    
-    console.log(answerLines)
-    fetch(submitUrl, {
-      method: 'POST',   
-      code: 'cors',
-      headers: {'content-type': 'application/json'},
-      body: JSON.stringify({codeBlocks: answerLines})
-    }).then((res) => res.json())
-      .then((data) =>{
+  const generateProblem = async () => {
+    if (answerLines.length > 0 || lines.length > 0) {
+      updateAnswerLines([]);
+      updateLines([]);
+    }
 
-        if (data.passed == true){
-          setCorrect(true)
-          setErrorMessage('')
+    if (location.state != null) {
+      console.log(location.state.payload);
+      setLoading(true);
 
-        } else {
-          setCorrect(false)
-          setErrorMessage(data.terminalMessage.toString())
-        }
-      })
+      console.log(`Topic: ${location.state.topic.toString()}\nTheme: ${location.state.theme.toString()}`);
 
-    
+      try {
+        const response = await axios.post(url, {
+          topic: location.state.topic.toString(),
+          theme: location.state.theme.toString()
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        });
+
+        const data = response.data;
+        setPromptObj(data);
+        updateLines(data.scrambledBlocks);
+      } catch (error) {
+        console.error('Error generating problem:', error);
+      } finally {
+        setLoading(false);
+        startTimer(); // Start timer when loading finishes
+      }
+    }
+  };
+
+  // New function to start the timer
+  const startTimer = () => {
+    const interval = setInterval(() => {
+      setElapsedTime(prevTime => prevTime + 1);
+    }, 1000); // Increment every second
+    setTimerInterval(interval); // Store the interval ID
+  };
+
+  const handleSubmit = async () => {
+    console.log(promptObj);
+    let submitUrl = `http://localhost:3001/api/parsonProblem/submit/${promptObj._id}`;
+
+    console.log(answerLines);
+
+    try {
+      console.log(`Time Taken: ${elapsedTime}`);
+      const response = await axios.post(submitUrl, {
+        codeBlocks: answerLines,
+        elapsedTime: elapsedTime // Send the elapsed time with the submission
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true
+      });
+
+      const data = response.data;
+
+      if (data.passed === true) {
+        setCorrect(true);
+        setErrorMessage('');
+      } else {
+        setCorrect(false);
+        setErrorMessage(data.terminalMessage.toString());
+      }
+    } catch (error) {
+      console.error('Error during submission:', error);
+    } finally {
+      clearInterval(timerInterval); // Stop the timer on submit
+      setElapsedTime(0); // Reset elapsed time if needed
+    }
   };
 
   const displayFeedback = () => {

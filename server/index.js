@@ -11,15 +11,23 @@ const adminRoutes = require('./routes/adminRoutes.js');
 const testRoutes = require('./routes/testRoutes.js');
 const parsonsProblemsRoutes = require('./routes/parsonsProblemsRoutes.js');
 
+const corsOptions = {
+    origin: 'http://localhost:3000', // Your frontend URL
+    credentials: true, // Allow cookies to be sent
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    exposedHeaders: ['Set-Cookie']
+};
 
 // Middleware
 const requestHandler = require('./middleware/requestHandler.js');
 
 const app = express();
+app.use(cors(corsOptions));
+
+
 
 // Middleware for reading json
 app.use(express.json());
-app.use(cors());
 
 // Middleware for cookies
 app.use(cookieParser());

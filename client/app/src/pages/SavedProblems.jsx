@@ -1,10 +1,11 @@
 // import '../styles/savedProblems.css';
 import { createElement } from 'react';
 import NavHome from "../components/NavHome";
-import {useNavigate} from 'react-router-dom'
-import {useEffect, useContext, useState} from 'react'
-import {AuthenticationContext} from "../contexts/AuthenticationContext"
+import {useNavigate} from 'react-router-dom';
+import {useEffect, useContext, useState} from 'react';
+import {AuthenticationContext} from "../contexts/AuthenticationContext";
 import {Link} from 'react-router-dom';
+import axios from 'axios';
 
 // In future SavedProblems([categories])
 const SavedProblems = ({isAuthenticated}) => {
@@ -60,23 +61,31 @@ const SavedProblems = ({isAuthenticated}) => {
     
 
     useEffect(() => {
-        if (isAuthenticated == false || isAuthenticated == null){
-            navigate("/", {replace : true}) 
-        } else {
-            fetch(pastProblemsUrl, {
-                method: 'GET',
-                code: 'cors',
-                headers: {'content-type': 'application/json'}
-              })
-              .then((result) => result.json())
-              .then((data) => {
-                if (data != null){
-                    setProblems(data)
-                    
+        const fetchPastProblems = async () => {
+            if (isAuthenticated === false || isAuthenticated === null) {
+                navigate("/", { replace: true });
+            } else {
+                try {
+                    const response = await axios.get(pastProblemsUrl, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        withCredentials: true // Include this if you need to send cookies with the request
+                    });
+
+                    const data = response.data;
+
+                    if (data) {
+                        setProblems(data);
+                    }
+                } catch (error) {
+                    console.error('Error fetching past problems:', error);
                 }
-              })
-        }
-    }, [])
+            }
+        };
+
+        fetchPastProblems();
+    }, []);
 
     
 
@@ -85,7 +94,7 @@ const SavedProblems = ({isAuthenticated}) => {
 
     return (
         <div>
-        {isAuthenticated == false ?  null : (
+        {isAuthenticated === false ?  null : (
             
             <div className='h-lvh bg-black'>
         
@@ -137,7 +146,7 @@ const SavedProblems = ({isAuthenticated}) => {
 
         )}
     </div>
-    )
+    );
 }
 //SKibibi
 export default SavedProblems;
