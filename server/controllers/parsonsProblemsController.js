@@ -122,6 +122,7 @@ exports.submitSolution = async (req, res) => {
         problem.totalTime += elapsedTime;
 
 
+
         const result = await pythonInterface(joinCodeLines(codeBlocks));
 
         // Correct
