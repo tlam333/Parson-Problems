@@ -140,7 +140,7 @@ const NavHome = () => {
             <div className="popup-inner text-black">
                   
                   <h3 className="inline">Login</h3>
-                  <a href="#" className="button">x</a>
+                  <a href="/" className="button">x</a>
                   <form className="mb-1" onSubmit={loginSubmit}>
                     <label className="block font-bold">Username</label>
                     <input className="block border-neutral-950 border-2 bg-white text-black"
@@ -165,7 +165,7 @@ const NavHome = () => {
                 
 
                 <h3 className="inline">Register</h3>
-                <a href="#" className="button">x</a>
+                <a href="/" className="button">x</a>
 
                 
                 <form className="mb-1" onSubmit={registerSubmit}>
