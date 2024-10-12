@@ -48,19 +48,18 @@ exports.getPastProblems = async (req, res) => {
 exports.createParsonProblem = async (req, res) => {
     try {
         // Extract information to create the Parson Problem
-        const { topic, theme, login, sub} = req.body;
+        const { topic, theme } = req.body;
 
         const { prompt, correctBlocks, scrambledBlocks } = await geminiInterface.generateProblemViaGemini(topic, theme); 
 
         let newProblem = null; // Declare newProblem once
 
         // Check if the user is logged in
-        if (login != "null") {
-            console.log("REQ LOGIN  *****   " + login)
-            console.log("REQ ID ****** " + sub)
+        if (req.login) {
+
             // Create problem with reference to the logged-in user
             newProblem = new ParsonProblem({
-                userOwner: sub, // Assuming req.sub contains the user ID
+                userOwner: req.sub, // Assuming req.sub contains the user ID
                 prompt: prompt,
                 topic: topic,
                 theme: theme,
@@ -72,7 +71,7 @@ exports.createParsonProblem = async (req, res) => {
             await newProblem.save(); // Ensure save completes before proceeding
 
             // Find the user and add the new problem to their past problems
-            const user = await User.findById(sub);
+            const user = await User.findById(req.sub);
             if (user) {
                 user.pastProblems.push(newProblem._id);
                 await user.save(); // Ensure the user's document is updated
@@ -111,7 +110,7 @@ exports.createParsonProblem = async (req, res) => {
  */
 exports.submitSolution = async (req, res) => {
     try {
-        const { codeBlocks } = req.body;
+        const { codeBlocks, elapsedTime } = req.body;
 
         // Retrieve parsons problem
         const problem = await ParsonProblem.findById(req.params.id);
@@ -120,7 +119,7 @@ exports.submitSolution = async (req, res) => {
         }
 
         problem.numAttempts++;
-        problem.totalTime += 15; /* The number in miliseconds of the latest attempt*/
+        problem.totalTime += elapsedTime;
 
 
         const result = await pythonInterface(joinCodeLines(codeBlocks));
@@ -134,8 +133,8 @@ exports.submitSolution = async (req, res) => {
                     $inc: 
                     { 
                         'stats.totalProblems': 1,
-                        'stats.correctProblems': 1
-                        // Add time taken to total time spent
+                        'stats.correctProblems': 1,
+                        'stats.timeSpent': elapsedTime
                     }
                 }, // Increment total problems by one
                 {
@@ -150,7 +149,7 @@ exports.submitSolution = async (req, res) => {
                     $inc: 
                     { 
                         'stats.totalProblems': 1,
-                        // Add time taken to total time spent
+                        'stats.timeSpent': elapsedTime
                     }
                 }, // Increment total problems by one
                 {

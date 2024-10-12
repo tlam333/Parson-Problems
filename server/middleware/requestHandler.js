@@ -4,12 +4,10 @@ const User = require('../models/user');
 
 
 module.exports = async (req, res, next) => {
-    if (req.cookies) {
-        console.log("cookies:", req.cookies);
-    }
-    if (Object.keys(req.cookies).length){
-        console.log("length:", Object.keys(req.cookies).length);
-    }
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Expose-Headers', 'Set-Cookie');
+
     // Check for Request cookies
     if (req.cookies && Object.keys(req.cookies).length > 0) {
 
@@ -31,7 +29,7 @@ module.exports = async (req, res, next) => {
             
             // If user has no refresh token they shouldn't be logged in noshiiii
             if (!refreshToken) {
-                console.log("siggggg");
+                //console.log("siggggg");
                 return res.sendStatus(403);
                 
             }
@@ -40,7 +38,7 @@ module.exports = async (req, res, next) => {
             const user = await User.findOne({ refreshToken: refreshToken });
 
             if (!user) {
-                console.log("sizzzzzzzzzzzz");
+                //console.log("sizzzzzzzzzzzz");
                 return res.sendStatus(403);
             }
             
@@ -57,10 +55,10 @@ module.exports = async (req, res, next) => {
             // Attach new access token to response cookie
             res.cookie('access_token', newAccessToken,
                 {
-                    // httpOnly: true,
-                    /* secure: process.env.NODE_ENV === 'production' */
-                    sameSite: 'None',
-                    maxAge: 5 * 60 * 1000 // 5 mins
+                    httpOnly: true,
+                    sameSite: 'Lax',    // To prevent CSRF (Cross Site Reqest Forgery)
+                    maxAge: 1 * 60 * 1000, // 1 mins
+                    path: '/'
                 }
             );
             // Attach req variables
@@ -68,7 +66,6 @@ module.exports = async (req, res, next) => {
             next();
         } 
     } else {
-        console.log('verifiedcheck');
         // No cookies so set as not logged in
         attachRequestVariables(false, req);
         next();
@@ -83,10 +80,9 @@ module.exports = async (req, res, next) => {
  * @param {String} role
  */
 const attachRequestVariables = (verified, req, sub, role) => {
-    console.log(verified);
-    // console.log(req);
-    console.log(sub);
-    console.log(role);
+    console.log(`Verified: ${verified}`);
+    console.log(`req.sub: ${sub}`);
+    console.log(`req.role: ${role}`);
     if (verified) {
         
         req.sub = sub;

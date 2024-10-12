@@ -5,6 +5,9 @@ const config = require('../config/config');
 
 
 exports.login = async (req, res) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Expose-Headers', 'Set-Cookie');
 
     // Find user
     try {
@@ -42,19 +45,17 @@ exports.login = async (req, res) => {
             await user.save();
 
             res.cookie('access_token', accessToken, {
-                // httpOnly: true,
-                /* secure: process.env.NODE_ENV === 'production' */
-                sameSite: 'None',    // To prevent CSRF (Cross Site Reqest Forgery)
+                httpOnly: true,
+                sameSite: 'Lax',    // To prevent CSRF (Cross Site Reqest Forgery)
                 maxAge: 1 * 60 * 1000, // 1 mins
-                // secure: true
+                path: '/'
             });
 
             res.cookie('refresh_token', refreshToken, {
-                // httpOnly: true,
-                /* secure: process.env.NODE_ENV === 'production' */
-                sameSite: 'None',    // To prevent CSRF (Cross Site Reqest Forgery)
+                httpOnly: true,
+                sameSite: 'Lax',    // To prevent CSRF (Cross Site Reqest Forgery)
                 maxAge: 7 * 24 * 60 * 60 * 1000,     // 7 Days
-                // secure: true,
+                path: '/'
             })
 
             return res.status(200).send(
@@ -78,13 +79,13 @@ exports.register = async (req, res) => {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-        console.log(
+        /*console.log(
             {
                 userName: req.body.userName,
                 salt: salt,
                 hashedPassword: hashedPassword
             }
-        );
+        );*/
 
         const newUser = new User(
             {
@@ -129,8 +130,8 @@ exports.logout = async (req, res) => {
         );
 
         // Clear cookies (remove tokens from the client)
-        res.clearCookie('access_token', {sameSite: 'None' });
-        res.clearCookie('refresh_token', {sameSite: 'None' });
+        res.clearCookie('access_token', { httpOnly: true, sameSite: 'Lax'});
+        res.clearCookie('refresh_token', { httpOnly: true, sameSite: 'Lax'});
 
         res.status(200).json({ message: "Logout successful" });
     } catch (error) {

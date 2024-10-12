@@ -24,8 +24,8 @@ const Home = () => {
                     
 
                     {/* <!--Start Background Animation Body--> */}
-                    <div class="area">
-                        <ul class="circles">
+                    <div className="area">
+                        <ul className="circles">
                             <li></li>
                             <li></li>
                             <li></li>
