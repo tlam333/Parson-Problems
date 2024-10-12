@@ -250,7 +250,7 @@ const WorkPage = () => {
         <>
           <div className="w-5/6 mx-auto">
             <h1 className="text-white text-2xl font-semibold">Prompt</h1>
-            <div className="w-full h-20 overflow-auto" style={{ backgroundColor: "#2d2e2e" }}><p>{promptObj.prompt}</p></div>
+            <div className="w-full text-white h-20 overflow-auto" style={{ backgroundColor: "#2d2e2e" }}><p>{promptObj.prompt}</p></div>
           </div>
 
           <DragDropContext onDragEnd={onDragEnd}>

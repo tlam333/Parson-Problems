@@ -61,7 +61,7 @@ const NavHome = () => {
 
     const loginSubmit = async () => {
       setLoading(true);
-  
+
       try {
           const response = await axios.post(urllogin, {
               userName: username,
@@ -82,11 +82,13 @@ const NavHome = () => {
               // Update isLoading state
               setLoading(false);
               // Trigger redirect
-              navigate("/CategoriesPage", { replace: true });
+              navigate("/CategoriesPage", { replace: true })
+            
           } else {
               // Handle case where the ID is not valid
               console.error('Login failed:', data);
               setLoading(false);
+              navigate("/", {replace: true})
           }
       } catch (error) {
           console.error('Axios error:', error);
@@ -141,7 +143,7 @@ const NavHome = () => {
                   
                   <h3 className="inline">Login</h3>
                   <a href="/" className="button">x</a>
-                  <form className="mb-1" onSubmit={loginSubmit}>
+                  <form className="mb-1" >
                     <label className="block font-bold">Username</label>
                     <input className="block border-neutral-950 border-2 bg-white text-black"
                             type="text"
@@ -154,7 +156,7 @@ const NavHome = () => {
                             onChange={(e)=>setPassword(e.target.value)}
                             value={password}
                     />
-                    <button disabled={isLoading} className="block p-1 mt-2 mb-2 rounded-lg font-bold text-white bg-orange-400" type="submit">Submit</button>
+                    <button onClick={loginSubmit} disabled={isLoading} className="block p-1 mt-2 mb-2 rounded-lg font-bold text-white bg-orange-400" type="submit">Submit</button>
                   </form>
                   
                 </div>
@@ -168,7 +170,7 @@ const NavHome = () => {
                 <a href="/" className="button">x</a>
 
                 
-                <form className="mb-1" onSubmit={registerSubmit}>
+                <form className="mb-1" >
                       <label className="block font-bold">Username</label>
                       <input className="block border-neutral-950 border-2 bg-white text-black"
                               type = "text"
@@ -187,7 +189,7 @@ const NavHome = () => {
                               onChange={(e)=>setPassword(e.target.value)}
                               value={password}
                       />
-                      <button disabled={isLoading} className="block p-1 mt-2 mb-2 rounded-lg font-bold text-white bg-orange-400" type="submit">
+                      <button onClick={registerSubmit} disabled={isLoading} className="block p-1 mt-2 mb-2 rounded-lg font-bold text-white bg-orange-400" type="submit">
                         Submit
                       </button>
                   </form>
