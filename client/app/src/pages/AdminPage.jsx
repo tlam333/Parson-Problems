@@ -1,10 +1,11 @@
-import React from 'React';
+import React from 'react';
+import NavHome from '../components/NavHome';
 
 const AdminPage = () => {
     return (
-        <div>
-            <h1>Testing</h1>
-        </div>
+        <>
+            <NavHome/>
+        </>
     );
 }
 
