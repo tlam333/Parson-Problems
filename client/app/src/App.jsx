@@ -12,6 +12,7 @@ import {
     Route,
     Link,
   } from "react-router-dom";
+import AdminPage from './pages/AdminPage.jsx';
 
 
 const App = () => {
@@ -55,6 +56,10 @@ const App = () => {
         {
             path: "/WorkPage",
             element: <WorkPage />
+        },
+        {
+            path: '/Admin',
+            element: <AdminPage/>
         }
     ])
 
