@@ -103,7 +103,7 @@ const NavHome = () => {
     }
 
     return (
-        <nav className="z-50 flex justify-between items-center bg-black p-4 ">
+        <nav className="absolute top-0 left-0 w-full z-50 flex justify-between items-center bg-transparent p-4 ">
         {/* Left Button - Redirect to Home */}
         <div className="flex items-center">
           <Link to='/'>
