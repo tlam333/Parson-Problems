@@ -1,5 +1,6 @@
 // import {useNavigate} from "react-router-dom"
 import { Link } from 'react-router-dom';
+import AlertError from './AlertError.jsx';
 import {useState} from 'react'
 import '../styles/homeNavigation.css'
 import {useContext} from 'react'
@@ -12,6 +13,7 @@ const NavHome = () => {
     const [password, setPassword] = useState('')
     const [username, setUsername] = useState('')
     const [isLoading, setLoading] = useState(false)
+    const [error, setError] = useState(null);
     const authenticationContext = useContext(AuthenticationContext)
     const {state, dispatch} = authenticationContext
     const navigate = useNavigate()
@@ -61,6 +63,7 @@ const NavHome = () => {
 
     const loginSubmit = async () => {
       setLoading(true);
+      setError(null)
 
       try {
           const response = await axios.post(urllogin, {
@@ -93,6 +96,12 @@ const NavHome = () => {
       } catch (error) {
           console.error('Axios error:', error);
           setLoading(false);
+
+          if (error.response) {
+            setError({ message: error.response.data.message || 'Something went wrong', code: error.response.status });
+          } else {
+            setError({ message: 'Network error', code: 0 });
+          }
           // Optionally show an error message to the user
       }
     };
@@ -158,7 +167,7 @@ const NavHome = () => {
                     />
                     <button onClick={loginSubmit} disabled={isLoading} className="block p-1 mt-2 mb-2 rounded-lg font-bold text-white bg-orange-400" type="submit">Submit</button>
                   </form>
-                  
+                  {error && <AlertError message={error.message} code={error.code} />}
                 </div>
           </div>
 
