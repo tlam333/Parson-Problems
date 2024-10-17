@@ -14,7 +14,9 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ userName: req.body.userName });
 
         if (!user) {
-            return res.status(404).send('User not found or incorrect password');
+            return res.status(404).json({
+                message: 'User not found or incorrect password'
+            });
         }
         
         const passwordMatches = await bcrypt.compare(req.body.password, user.password);
@@ -65,10 +67,12 @@ exports.login = async (req, res) => {
             );
 
         } else {
-            return res.status(401).send('User not found or incorrect password');
+            return res.status(404).json({
+                message: 'User not found or incorrect password'
+            });
         }
     } catch (error) {
-        return res.status(400).send(`Internal Server Error: "${error}"`)
+        return res.status(500).send(`Internal Server Error: "${error}"`)
     }
 }
 
