@@ -83,14 +83,6 @@ exports.register = async (req, res) => {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-        /*console.log(
-            {
-                userName: req.body.userName,
-                salt: salt,
-                hashedPassword: hashedPassword
-            }
-        );*/
-
         const newUser = new User(
             {
             userName: req.body.userName,
@@ -98,6 +90,7 @@ exports.register = async (req, res) => {
             email: req.body.email
         }
         );
+
         // Attempt to insert to db
         await newUser.save();
 
@@ -108,7 +101,9 @@ exports.register = async (req, res) => {
             }
         );
     } catch (error) {
-        return res.status(400).send(`Internal Server Error: "${error}"`);
+        return res.status(400).json({
+            message: 'Username taken. Please enter a different username'
+        });
     }
 }
 
