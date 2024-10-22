@@ -121,6 +121,30 @@ exports.submitSolution = async (req, res) => {
         problem.numAttempts++;
         problem.totalTime += elapsedTime;
 
+        // Check all code blocks used
+        if (codeBlocks.length !== problem.correctBlocks) {
+
+            await User.findByIdAndUpdate(
+                req.sub,
+                { 
+                    $inc: 
+                    { 
+                        'stats.totalProblems': 1,
+                        'stats.timeSpent': elapsedTime
+                    }
+                }, // Increment total problems by one
+                {
+                    new: true,
+                    runValidators: true
+                }
+            );
+
+            return res.status(200).send({
+                passed: false,
+                terminalMessage: "Please use all code"
+            });
+        }
+
 
 
         const result = await pythonInterface(joinCodeLines(codeBlocks));
