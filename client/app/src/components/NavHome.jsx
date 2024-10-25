@@ -121,7 +121,7 @@ const NavHome = () => {
     }
 
     return (
-        <nav className="absolute top-0 left-0 w-full z-50 flex justify-between items-center bg-transparent p-4 ">
+        <nav className="w-full z-50 flex justify-between items-center bg-transparent p-4 ">
             {/* Left Button - Redirect to Home */}
             <div className="flex items-center">
               <Link to='/'>
@@ -133,10 +133,12 @@ const NavHome = () => {
                 </button>
               </Link>
             </div>
-            {/* Hide Nav Bar */}
+            {/*
+            Hide Nav Bar 
             <div className='bg-orange-500 rounded-lg'>
                 <svg height="50px" width="50px" version="1.1" id="Capa_1" viewBox="-30.91 -30.91 370.96 370.96" xmlSpace="preserve" fill="#000000" transform="rotate(90)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M112.855,154.571L240.481,26.946c2.929-2.929,2.929-7.678,0-10.606L226.339,2.197 C224.933,0.79,223.025,0,221.036,0c-1.989,0-3.897,0.79-5.303,2.197L68.661,149.268c-2.929,2.929-2.929,7.678,0,10.606 l147.071,147.071c1.406,1.407,3.314,2.197,5.303,2.197c1.989,0,3.897-0.79,5.303-2.197l14.142-14.143 c2.929-2.929,2.929-7.678,0-10.606L112.855,154.571z"></path> </g></svg>
             </div>
+            */}
               {/* Right Menu - Dropdown */}
               <div className="dropdown dropdown-end z-40">
                 <div tabIndex={0} role="button" className="text-orange-500 text-4xl">
