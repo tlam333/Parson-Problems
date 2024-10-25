@@ -121,8 +121,10 @@ exports.submitSolution = async (req, res) => {
         problem.numAttempts++;
         problem.totalTime += elapsedTime;
 
+        // console.log(`codeBlocks: ${codeBlocks.length}\ncorrectBlocks: ${problem.correctBlocks}`);
+
         // Check all code blocks used
-        if (codeBlocks.length !== problem.correctBlocks) {
+        if (codeBlocks.length !== problem.correctBlocks.length) {
 
             await User.findByIdAndUpdate(
                 req.sub,
@@ -138,6 +140,7 @@ exports.submitSolution = async (req, res) => {
                     runValidators: true
                 }
             );
+            problem.save();
 
             return res.status(200).send({
                 passed: false,
@@ -183,6 +186,8 @@ exports.submitSolution = async (req, res) => {
                 }
             );
         }
+
+        problem.save();
 
         return res.status(200).send(result);
 
