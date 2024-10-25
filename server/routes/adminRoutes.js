@@ -6,5 +6,6 @@ const router = express.Router();
 
 //  '/login'
 router.get('/', adminController.getNumUsers);
+router.get('/recentProblems', adminController.getRecentProblemSubmissions);
 
 module.exports = router;
