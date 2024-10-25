@@ -10,6 +10,7 @@ const AdminPage = () => {
     const [numUsers, setNumUsers] = useState(0);
     const [numProblems, setNumProblems] = useState(0);
     const [recentProblems, setRecentProblems] = useState([]);
+    const [isAdmin, setIsAdmin ] = useState(false);
     const [isLoading, setLoading] = useState(true);
 
     const getTotals = async () => {
@@ -21,15 +22,16 @@ const AdminPage = () => {
                 withCredentials: true
             });
 
-            console.log(`Response ${await response.data}`);
-            console.log(`Response ${response.data}`);
+            // console.log(`Response ${await response.data}`);
+            // console.log(`Response ${response.data}`);
 
+            setIsAdmin(true);
             return {
                 numUsers: await response.data.numUsers,
                 numProblems: await response.data.numProblems
             };
         } catch (error) {
-            console.log(`Error with getTotals: ${error}`);
+            console.log(`No Access`);
             return null;
         }
     };
@@ -43,7 +45,8 @@ const AdminPage = () => {
                 withCredentials: true
             });
 
-            console.log(response.data);
+            // console.log(response.data);
+            setIsAdmin(true);
             return await response.data;
         } catch (error) {
             console.log(`Error with getRecentProblems: ${error}`);
@@ -53,6 +56,7 @@ const AdminPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsAdmin(false);
             setLoading(true); // Set loading to true before fetching data
 
             const totals = await getTotals();
@@ -82,16 +86,15 @@ const AdminPage = () => {
                 <div className="flex justify-center items-center h-full">
                     <span className="loading loading-bars loading-lg"></span>
                 </div>
+            ) : !isAdmin ? (
+                <div className="flex h-full w-full items-center justify-center p-80">NO ACCESS</div>
             ) : (
-                <div className="min-h-screen bg-black text-white flex flex-col items-center text-center font-sans">
-                    <div className="mb-10">
-                        <br />
+                <div className="min-h-screen bg-black text-white flex flex-col items-center text-center font-sans gap-10 py-10">
+                    <div>
                         <h1 className="text-5xl font-bold">
                             Admin <span className="text-orange-500">Analytics</span>
                         </h1>
                     </div>
-                    <br />
-                    <br />
 
                     {/* Statistics with Slimmer DaisyUI Divider */}
                     <div className="flex w-full justify-center flex-row gap-36">
@@ -135,7 +138,9 @@ const AdminPage = () => {
                             </table>
                         </div>
                 </div>
-            )}
+            )
+            
+            }
         </>
     );
 };
