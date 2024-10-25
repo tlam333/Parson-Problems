@@ -24,7 +24,10 @@ exports.getProblem = async (req, res) => {
 exports.getPastProblems = async (req, res) => {
     try {
         // Find the user by their ID (assuming req.sub contains the logged-in user's ID)
-        const user = await User.findById(req.params.id).populate('pastProblems');
+        const user = await User.findById(req.params.id).populate({
+            path: 'pastProblems',
+            options: { sort: {createdAt: -1} }
+        });
 
         // If the user doesn't exist, return a 404 error
         if (!user) {
@@ -38,10 +41,11 @@ exports.getPastProblems = async (req, res) => {
 
         // Send the past problems in the response
         // user.pastProblems.forEach((problemID) => {})
-        res.status(200).json(user.pastProblems); // returns array of problem IDs
+        console.log(user.pastProblems)
+        return res.status(200).json(user.pastProblems); // returns array of problem IDs
     } catch (error) {
         // Handle errors
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 
