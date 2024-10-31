@@ -59,13 +59,11 @@ To run this project locally, follow these steps:
 
 ## Table of Contents
 - [Project Setup](#project-setup)
-- [Environment Setup](#environment-setup)
-- [Running the Project](#running-the-project)
 - [Front End Testing Expectations](#front-end-testing-expectations)
-- [Front End Testing Methods](#front-end-testing-methods)
+    - [Front End Testing Methods](#front-end-testing-methods)
 - [Back End Testing Expectations](#back-end-testing-expectations)
-- [Back End Testing Methods](#back-end-testing-methods)
-- [Additional Resources](#additional-resources)
+    - [Back End Testing Methods](#back-end-testing-methods)
+
 
 **_Contents_**
 
