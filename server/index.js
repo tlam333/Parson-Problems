@@ -12,7 +12,7 @@ const testRoutes = require('./routes/testRoutes.js');
 const parsonsProblemsRoutes = require('./routes/parsonsProblemsRoutes.js');
 
 const corsOptions = {
-    origin: 'http://localhost:3000', // Your frontend URL
+    origin: 'http://localhost:3000', 
     credentials: true, // Allow cookies to be sent
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     exposedHeaders: ['Set-Cookie']
