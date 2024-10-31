@@ -70,7 +70,6 @@ To run this project locally, follow these steps:
   - [Table of Contents](#table-of-contents)
   - [Project Setup](#project-setup)
   - [Running the Project](#running-the-project)
-  - [node index.js](#node-indexjs)
   - [Front End testing expectations](#front-end-testing-expectations)
     - [Front End testing methods](#front-end-testing-methods)
   - [Back End Testing Expectations](#back-end-testing-expectations)
@@ -139,15 +138,22 @@ Expectations
 
 1. Responsive test. Frequent checks must be made to ensure that pages remain responsive across different screen sizes.
 
-Desktop viewport range: ~800 -1000 pixels:![alt text](images/front-end1.png)
+Desktop viewport range: ~800 -1000 pixels:![alt text]
 
-Tablet viewport range: ~500 -790 pixels:![alt text](images/front-end2.png)
+<img src="images/front-end1.png" alt="alt text" width="500"/>
 
-Mobile viewport range: ~330 -490 pixels:![alt text](images/front-end3.png)
+Tablet viewport range: ~500 -790 pixels:
 
-2. Interactive test. Every interactable component must support touch, and mouse events.
-3. Browser test. Ensure that all pages and features are supported for the three major web-browsers repeat steps 1.) and 2.) for each browser.
-   ![alt text](images/browser.png)
+<img src="images/front-end2.png" alt="alt text" width="250"/>
+
+Mobile viewport range: ~330 -490 pixels:
+
+<img src="images/front-end3.png" alt="alt text" width="200"/>
+
+1. Interactive test. Every interactable component must support touch, and mouse events.
+2. Browser test. Ensure that all pages and features are supported for the three major web-browsers repeat steps 1.) and 2.) for each browser.
+
+   <img src="images/browser.png" alt="alt text" width="200"/>
 
 ### Front End testing methods
 
@@ -157,20 +163,23 @@ For front end testing use it is sufficient to use the developer tools provided b
 
 [Chrome DevTools | Chrome for Developers](https://developer.chrome.com/docs/devtools)
 
-1. `Responsive test`: Find the following navigation bar in the top left corner ![alt text](images/chromedev1.png)
+1. `Responsive test`: Find the following navigation bar in the top left corner <img src="images/chromedev1.png" alt="alt text" width="470"/>
    Enter the viewport size range in the input boxes in pixel units.
 
-2. `Interactive test`: Find the following navigation bar in the top right corner ![alt text](images/chromedev2.png)
+2. `Interactive test`: Find the following navigation bar in the top right corner <img src="images/chromedev2.png" alt="alt text" width="250"/>
    Click the 2nd icon from the left to enable and disable touch events. When the icon is disabled, mouse events will be enabled and your mouse cursor will be visible.
 
 ## Back End Testing Expectations
 
 **Expectations**
 
-1. _Error codes and asserts_. It is expected that asserts and HTTP error codes are placed throughout backend code to ensure ease of debugging.![alt text](images/ErrorCode.png)
+1. _Error codes and asserts_. It is expected that asserts and HTTP error codes are placed throughout backend code to ensure ease of debugging.
+
+   <img src="images/ErrorCode.png" alt="alt text" width="180"/>
+
 2. _Route and request test_. Routes should be
    tested for all HTTP request types placed
-   onto the route.![alt text](images/route_requests.png)
+   onto the route.<img src="images/route_requests.png" alt="alt text" width="450"/>
 
 ### Backend testing methods
 
@@ -186,7 +195,8 @@ For back end expectations see [Backend testing methods](https://techballers.atla
 After installing thunder client via VSCode extensions, navigate to the thunder icon on VSCode left sidebar.
 
 1. On the top left, click New Request
-   ![alt text](images/thunderclient1.png)
+
+   <img src="images/thunderclient1.png" alt="alt text" width="350"/>
 
 2. Select the HTTP method type, enter the URL. Click “Body“ and enter test cases for the body of the request object.
    ![alt text](images/thunderclient2.png)
