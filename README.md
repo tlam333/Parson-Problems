@@ -75,6 +75,8 @@ pandas
 
 ## Project Setup
 
+*** Disclaimer, this project relies on the use of local hosts ports 3000 and 3001. For trouble shooting network error code: 0, you must ensure that these two ports are freed at the time of running the front and backend of the project. 
+
 This project uses the MERN stack. Follow these steps for the initial setup. The first few parts just reminds you of the installation process read it again just to ensure that you have done it correctly.
 
 1. **Clone or fork the repository** from GitHub.
