@@ -18,52 +18,43 @@ To run this project locally, follow these steps:
    ```bash
    git clone https://github.com/yourusername/parsons-problems-data-analytics.git
    ```
-
-2. Navigate to the project directory:
+2. Open two terminal instances one terminal will be used to run the server side, the other to run the front end client side part of the project. 
+2. In both terminals navigate to COMP30022 directory
 
    ```bash
    cd COMP30022
    ```
-
-3. Navigate to the client or server directory
+3. In the first terminal navigate to /client/app
+   do 
+   ```
+   cd client
+   ```
+   then 
+   ```
+   cd app
+   ```
+3. In the second terminal instance navigate to the backend part of the project
 
    ```bash
    cd server
    ```
 
-   or
 
-   ```bash
-   cd client
-   cd app
-   ```
-
-4. Install the required dependencies in both:
+4. In BOTH terminal instances, we need to install all dependencies this step is a must, so enter this command in both terminals:
 
    ```bash
    npm install
    ```
 
-5. Start the development server in /server:
+7. Now you need to install the python libraries. Open a third terminal instance and pip install the following libraries
+```bash
+flake8
+scikit-learn
+numpy
+pandas
+```
+8. Now the relevant installation is complete, we need to know how to run the project refer to [Project Setup](#project-setup)
 
-   ```bash
-   npm run start
-   ```
-
-6. Start the development server in /client/app:
-
-   ```bash
-   npm run start
-   ```
-
-7. Open your browser and go to `http://localhost:3000` to view the app.
-
-## Usage
-
-1. **Select a Category:** Choose a data analytics category from the dropdown menu.
-2. **Solve the Problem:** Rearrange the code blocks to form the correct solution.
-3. **Submit:** Click the "Submit" button to check your answer.
-4. **Receive Feedback:** Immediate feedback will be provided to help you understand any mistakes.
 
 # Project Setup and Testing Guide
 
@@ -72,11 +63,12 @@ To run this project locally, follow these steps:
 - [Parsons Problems for Data Analytics](#parsons-problems-for-data-analytics)
   - [Features](#features)
   - [Installation](#installation)
-  - [Usage](#usage)
+
 - [Project Setup and Testing Guide](#project-setup-and-testing-guide)
   - [Table of Contents](#table-of-contents)
   - [Project Setup](#project-setup)
   - [Running the Project](#running-the-project)
+   - [Usage](#usage)
   - [Front End testing expectations](#front-end-testing-expectations)
     - [Front End testing methods](#front-end-testing-methods)
   - [Back End Testing Expectations](#back-end-testing-expectations)
@@ -84,7 +76,7 @@ To run this project locally, follow these steps:
 
 ## Project Setup
 
-This project uses the MERN stack. Follow these steps for the initial setup.
+This project uses the MERN stack. Follow these steps for the initial setup. The first few parts just reminds you of the installation process read it again just to ensure that you have done it correctly.
 
 1. **Clone or fork the repository** from GitHub.
 2. **Frontend Setup**:
@@ -106,7 +98,9 @@ This project uses the MERN stack. Follow these steps for the initial setup.
      - `numpy`
      - `pandas`
    - If Python is not installed, install it first.
-5. **Environment File (.env)**:
+5. **Environment File (.env)** :
+   ****Disclaimer!!! this file is already configured for the assesors of the project the secret keys and tokens are given. However if one wants to utilise it for personal use then follow this step to configure a new .env file, otherwise skip this step. 
+
    - Create a `.env` file in the `/server` directory with the following structure:
      ```plaintext
      DATABASE_URI=
@@ -115,6 +109,7 @@ This project uses the MERN stack. Follow these steps for the initial setup.
      ACCESS_TOKEN_SECRET=''
      REFRESH_TOKEN_SECRET=''
      ```
+   
    - Set up a MongoDB Atlas account, create a free cluster and collection, and generate a database key.
    - Copy the MongoDB Atlas URL into `DATABASE_URI`.
    - Specify an available port in the `PORT` variable.
@@ -136,6 +131,12 @@ To run the project, open two terminal instances:
   ```bash
   node index.js
   ```
+## Usage
+
+1. **Select a Category:** Choose a data analytics category from the dropdown menu.
+2. **Solve the Problem:** Rearrange the code blocks to form the correct solution.
+3. **Submit:** Click the "Submit" button to check your answer.
+4. **Receive Feedback:** Immediate feedback will be provided to help you understand any mistakes.
 
 To Submit Parsons Problems type : `python drag.py` into the console on the workspace page
 
