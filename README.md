@@ -65,7 +65,6 @@ pandas
   - [Installation](#installation)
 
 - [Project Setup and Testing Guide](#project-setup-and-testing-guide)
-  - [Table of Contents](#table-of-contents)
   - [Project Setup](#project-setup)
   - [Running the Project](#running-the-project)
    - [Usage](#usage)
