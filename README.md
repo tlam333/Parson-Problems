@@ -137,6 +137,8 @@ To run the project, open two terminal instances:
   node index.js
   ```
 
+To Submit Parsons Problems type : `python drag.py` into the console on the workspace page
+
 ---
 
 ## Front End testing expectations
