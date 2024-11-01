@@ -46,14 +46,14 @@ To run this project locally, follow these steps:
    npm install
    ```
 
-7. Now you need to install the python libraries. Open a third terminal instance and pip install the following libraries
+7. Now you need to install the python libraries. Open a third terminal instance and pip install the following libraries. If you do not have python or pip installed, but the setup for python and pip is outside the scope of this document, we assume that you have it installed already. 
 ```bash
 flake8
 scikit-learn
 numpy
 pandas
 ```
-8. Now the relevant installation is complete, we need to know how to run the project refer to [Project Setup](#project-setup)
+8. Now the relevant installation is complete, we need to know how to run the project so refer to [Project Setup](#project-setup)
 
 
 # Project Setup and Testing Guide
@@ -133,12 +133,13 @@ To run the project, open two terminal instances:
   ```
 ## Usage
 
-1. **Select a Category:** Choose a data analytics category from the dropdown menu.
-2. **Solve the Problem:** Rearrange the code blocks to form the correct solution.
-3. **Submit:** Click the "Submit" button to check your answer.
-4. **Receive Feedback:** Immediate feedback will be provided to help you understand any mistakes.
+1. **Register an account** you need to register an account first before navigating around to different pages.
+2. If you already registered then simple login with an existing username and password.
+1. **Select a Category:** Choose a data analytics category from the dropdown menu and click a topic.
+2. **Solve the Problem:** Now you should be in the workspace page where you can rearrange the code blocks to form the correct solution, you must drag all the code blocks before submitting. 
+4. **Receive Feedback:** To submit Parsons Problems type : `python drag.py` into the bottom console on the workspace page and viola
 
-To Submit Parsons Problems type : `python drag.py` into the console on the workspace page
+** As per client request, there is a special admin route with an admin account. The original client for this project should have the authentication credentials for the admin account, and can test the admin account if they chose to do so. 
 
 ---
 
