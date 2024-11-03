@@ -1,6 +1,7 @@
 import SavedProblems from './pages/SavedProblems.jsx';
 import ProfilePage from "./pages/profilePage.jsx";
 import CategoriesPage from "./pages/CategoriesPage.jsx";
+import WorkPageNew from './pages/WorkPageNew.jsx';
 import Home from "./pages/Home.jsx"
 import WorkPage from "./pages/WorkPage.jsx"
 import {useContext} from 'react'
@@ -12,6 +13,7 @@ import {
     Route,
     Link,
   } from "react-router-dom";
+import AdminPage from './pages/AdminPage.jsx';
 
 
 const App = () => {
@@ -55,6 +57,14 @@ const App = () => {
         {
             path: "/WorkPage",
             element: <WorkPage />
+        },
+        {
+            path: '/Admin',
+            element: <AdminPage/>
+        },
+        {
+            path: '/WorkPage2',
+            element: <WorkPageNew/>
         }
     ])
 

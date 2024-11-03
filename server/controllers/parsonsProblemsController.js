@@ -24,7 +24,10 @@ exports.getProblem = async (req, res) => {
 exports.getPastProblems = async (req, res) => {
     try {
         // Find the user by their ID (assuming req.sub contains the logged-in user's ID)
-        const user = await User.findById(req.params.id).populate('pastProblems');
+        const user = await User.findById(req.params.id).populate({
+            path: 'pastProblems',
+            options: { sort: {createdAt: -1} }
+        });
 
         // If the user doesn't exist, return a 404 error
         if (!user) {
@@ -38,29 +41,29 @@ exports.getPastProblems = async (req, res) => {
 
         // Send the past problems in the response
         // user.pastProblems.forEach((problemID) => {})
-        res.status(200).json(user.pastProblems); // returns array of problem IDs
+        console.log(user.pastProblems)
+        return res.status(200).json(user.pastProblems); // returns array of problem IDs
     } catch (error) {
         // Handle errors
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 
 exports.createParsonProblem = async (req, res) => {
     try {
         // Extract information to create the Parson Problem
-        const { topic, theme, login, sub} = req.body;
+        const { topic, theme } = req.body;
 
         const { prompt, correctBlocks, scrambledBlocks } = await geminiInterface.generateProblemViaGemini(topic, theme); 
 
         let newProblem = null; // Declare newProblem once
 
         // Check if the user is logged in
-        if (login != "null") {
-            console.log("REQ LOGIN  *****   " + login)
-            console.log("REQ ID ****** " + sub)
+        if (req.login) {
+
             // Create problem with reference to the logged-in user
             newProblem = new ParsonProblem({
-                userOwner: sub, // Assuming req.sub contains the user ID
+                userOwner: req.sub, // Assuming req.sub contains the user ID
                 prompt: prompt,
                 topic: topic,
                 theme: theme,
@@ -72,7 +75,7 @@ exports.createParsonProblem = async (req, res) => {
             await newProblem.save(); // Ensure save completes before proceeding
 
             // Find the user and add the new problem to their past problems
-            const user = await User.findById(sub);
+            const user = await User.findById(req.sub);
             if (user) {
                 user.pastProblems.push(newProblem._id);
                 await user.save(); // Ensure the user's document is updated
@@ -111,7 +114,7 @@ exports.createParsonProblem = async (req, res) => {
  */
 exports.submitSolution = async (req, res) => {
     try {
-        const { codeBlocks } = req.body;
+        const { codeBlocks, elapsedTime } = req.body;
 
         // Retrieve parsons problem
         const problem = await ParsonProblem.findById(req.params.id);
@@ -120,7 +123,35 @@ exports.submitSolution = async (req, res) => {
         }
 
         problem.numAttempts++;
-        problem.totalTime += 15; /* The number in miliseconds of the latest attempt*/
+        problem.totalTime += elapsedTime;
+
+        // console.log(`codeBlocks: ${codeBlocks.length}\ncorrectBlocks: ${problem.correctBlocks}`);
+
+        // Check all code blocks used
+        if (codeBlocks.length !== problem.correctBlocks.length) {
+
+            await User.findByIdAndUpdate(
+                req.sub,
+                { 
+                    $inc: 
+                    { 
+                        'stats.totalProblems': 1,
+                        'stats.timeSpent': elapsedTime
+                    }
+                }, // Increment total problems by one
+                {
+                    new: true,
+                    runValidators: true
+                }
+            );
+            problem.save();
+
+            return res.status(200).send({
+                passed: false,
+                terminalMessage: "Please use all code"
+            });
+        }
+
 
 
         const result = await pythonInterface(joinCodeLines(codeBlocks));
@@ -134,8 +165,8 @@ exports.submitSolution = async (req, res) => {
                     $inc: 
                     { 
                         'stats.totalProblems': 1,
-                        'stats.correctProblems': 1
-                        // Add time taken to total time spent
+                        'stats.correctProblems': 1,
+                        'stats.timeSpent': elapsedTime
                     }
                 }, // Increment total problems by one
                 {
@@ -150,7 +181,7 @@ exports.submitSolution = async (req, res) => {
                     $inc: 
                     { 
                         'stats.totalProblems': 1,
-                        // Add time taken to total time spent
+                        'stats.timeSpent': elapsedTime
                     }
                 }, // Increment total problems by one
                 {
@@ -159,6 +190,8 @@ exports.submitSolution = async (req, res) => {
                 }
             );
         }
+
+        problem.save();
 
         return res.status(200).send(result);
 

@@ -23,6 +23,7 @@ const Categories = ({ categories }) => {
                             state = {{topic : category.title, theme : category.subtopic3}}><li><a className="hover:bg-orange-600">{category.subtopic3}</a></li></Link>
                         </ul>
                     </div>
+                    
                 </div>
             ))}
         </div>

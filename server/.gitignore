@@ -2,6 +2,7 @@
 node_modules/
 
 # Hide Environment Variables
-.env
+# .env
+DOCKERFILE
 
 python/

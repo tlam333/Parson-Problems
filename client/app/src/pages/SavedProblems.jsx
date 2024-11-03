@@ -1,10 +1,11 @@
 // import '../styles/savedProblems.css';
 import { createElement } from 'react';
 import NavHome from "../components/NavHome";
-import {useNavigate} from 'react-router-dom'
-import {useEffect, useContext, useState} from 'react'
-import {AuthenticationContext} from "../contexts/AuthenticationContext"
+import {useNavigate} from 'react-router-dom';
+import {useEffect, useContext, useState} from 'react';
+import {AuthenticationContext} from "../contexts/AuthenticationContext";
 import {Link} from 'react-router-dom';
+import axios from 'axios';
 
 // In future SavedProblems([categories])
 const SavedProblems = ({isAuthenticated}) => {
@@ -60,23 +61,31 @@ const SavedProblems = ({isAuthenticated}) => {
     
 
     useEffect(() => {
-        if (isAuthenticated == false || isAuthenticated == null){
-            navigate("/", {replace : true}) 
-        } else {
-            fetch(pastProblemsUrl, {
-                method: 'GET',
-                code: 'cors',
-                headers: {'content-type': 'application/json'}
-              })
-              .then((result) => result.json())
-              .then((data) => {
-                if (data != null){
-                    setProblems(data)
-                    
+        const fetchPastProblems = async () => {
+            if (isAuthenticated === false || isAuthenticated === null) {
+                navigate("/", { replace: true });
+            } else {
+                try {
+                    const response = await axios.get(pastProblemsUrl, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        withCredentials: true // Include this if you need to send cookies with the request
+                    });
+
+                    const data = response.data;
+
+                    if (data) {
+                        setProblems(data);
+                    }
+                } catch (error) {
+                    console.error('Error fetching past problems:', error);
                 }
-              })
-        }
-    }, [])
+            }
+        };
+
+        fetchPastProblems();
+    }, []);
 
     
 
@@ -85,59 +94,47 @@ const SavedProblems = ({isAuthenticated}) => {
 
     return (
         <div>
-        {isAuthenticated == false ?  null : (
+        {isAuthenticated === false ?  null : (
             
-            <div className='h-lvh bg-black'>
-        
-            <NavHome />
-                    
-            <h1 className="text-5xl font-bold text-white text-center mt-4">
-                Saved <span className="text-orange-500">Problems</span>
-            </h1>
-            <br />
-                <div className='overflow-y-auto border-orange-500 mt-10 border-2 w-5/6 h-4/6 bg-black m-auto'>
-                    <table className='table-auto h-auto w-full m-auto'>
-                        <thead className='sticky top-0'>
-                            <tr className='text-white'>
-                                {/* <td className='p-3 bg-orange-500'>Mark As Complete</td> */}
-                                <td className='p-3 bg-orange-500'>Problem</td>
-                                <td className='p-3 bg-orange-500'>Category</td>
-                                {/* <td className='p-3 bg-orange-500'>Status</td> */}
-                            </tr>
-                        </thead>
-            
-                        <tbody className="bg-black h-auto">
-                            {problems.length > 0 ? problems.map((item, index) => (
-                                <tr key={index} className='hover:bg-slate-900 text-white'>
-                                    {/* <td className='p-3 text-sm border-b-orange-500 border-b-2'><input type='checkbox'></input></td> */}
-                                    <td className='p-3 text-sm border-b-orange-500 border-b-2 font-bold hover:text-orange-500'>
-                                        
+                <div className='flex flex-col items-center w-full h-svh bg-black gap-10'>
 
-                                        <Link className="underline" to ="/WorkPage"
-                                            state = {{topic : item.topic, theme: item.theme, problem_id: item._id}}
-                                        >
-                                        {item.topic}
-                                        </Link>
-                                    </td>
-                                    <td className='p-3 text-sm border-b-orange-500 border-b-2'>{item.theme}</td>
-                                    {/* <td className='p-3 text-sm border-b-orange-500 border-b-2'>
-                                        <span className={`rounded-lg text-white p-2 ${item.solvedStatus === 'Complete' ? 'bg-green-300' : 'bg-red-300'}`}>{item.solvedStatus}</span>
-                                    </td> */}
+                    <NavHome />
+
+                    <h1 className="text-5xl font-bold text-white">
+                        Saved <span className="text-orange-500">Problems</span>
+                    </h1>
+                    <div className="h-full w-3/4 overflow-x-auto overflow-y-scroll">
+                        <table className="table overflow-y-scroll">
+                            {/* head */}
+                            <thead className="sticky">
+                                <tr>
+                                    <th>Topic</th>
+                                    <th>Theme</th>
+                                    <th>Attempts</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
                                 </tr>
-                            )): 
-                                <div></div>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {/* row 1 */}
+                                {problems.map((problem, index) => (
+                                        <tr key={index}>
+                                            <th><Link className="underline" to="/WorkPage2" state={{topic : problem.topic, theme: problem.theme, problem_id: problem._id}}>{problem.topic}</Link></th>
+                                            <td>{problem.theme}</td>
+                                            <td>{problem.numAttempts}</td>
+                                            <td>{problem.totalTime}</td>
+                                            <td>{problem.correct ? "Correct" : "Incorrect"}</td>
+                                        </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-    
-    
-            </div>
 
 
-        )}
-    </div>
-    )
+            )}
+        </div>
+    );
 }
 //SKibibi
 export default SavedProblems;
