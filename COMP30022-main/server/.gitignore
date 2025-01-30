@@ -1,0 +1,8 @@
+# Don't want to upload node_modules because it can install differently on different systems
+node_modules/
+
+# Hide Environment Variables
+# .env
+DOCKERFILE
+
+python/
